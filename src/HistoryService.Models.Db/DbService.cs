@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Models.Db
 {
@@ -21,11 +18,11 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
         public DateTime? ModifiedAtUtc { get; set; }
 
         [IgnoreParse]
-        public ICollection<DbServiceHistory> ServiceHistories { get; set; }
+        public ICollection<DbServiceHistory> ServicesHistories { get; set; }
 
         public DbService()
         {
-            ServiceHistories = new HashSet<DbServiceHistory>();
+            ServicesHistories = new HashSet<DbServiceHistory>();
         }
     }
 
@@ -44,7 +41,7 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
                 .IsRequired();
 
             builder
-                .HasMany(s => s.ServiceHistories)
+                .HasMany(s => s.ServicesHistories)
                 .WithOne(sh => sh.Service);
         }
     }

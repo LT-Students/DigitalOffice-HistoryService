@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
 
             builder
                 .HasOne(sh => sh.Service)
-                .WithMany(s => s.ServiceHistories);
+                .WithMany(s => s.ServicesHistories);
         }
     }
 }
