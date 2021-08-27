@@ -4,10 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService", "src\HistoryService\HistoryService.csproj", "{62DD25C6-182F-447E-AE0E-55C407E92DE0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B11AB828-B382-4AB1-BDE9-2A8C3FA8957F} = {B11AB828-B382-4AB1-BDE9-2A8C3FA8957F}
-		{8BFF91DA-96F2-41EB-998B-3940E487E19C} = {8BFF91DA-96F2-41EB-998B-3940E487E19C}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BF440D82-F8CA-4699-A730-FA8F376359F0}"
 EndProject
@@ -20,16 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService.Data.Provider.MsSql.Ef", "src\HistoryService.Data.Provider.MsSql.Ef\HistoryService.Data.Provider.MsSql.Ef.csproj", "{FAE8C8F3-EFA0-4F92-818F-AE0870C7BBCE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B11AB828-B382-4AB1-BDE9-2A8C3FA8957F} = {B11AB828-B382-4AB1-BDE9-2A8C3FA8957F}
-		{8BFF91DA-96F2-41EB-998B-3940E487E19C} = {8BFF91DA-96F2-41EB-998B-3940E487E19C}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService.Data.Provider", "src\HistoryService.Data.Provider\HistoryService.Data.Provider.csproj", "{8BFF91DA-96F2-41EB-998B-3940E487E19C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HistoryService.Models.Db", "src\HistoryService.Models.Db\HistoryService.Models.Db.csproj", "{B11AB828-B382-4AB1-BDE9-2A8C3FA8957F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,9 +33,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{62DD25C6-182F-447E-AE0E-55C407E92DE0} = {BF440D82-F8CA-4699-A730-FA8F376359F0}
-		{FAE8C8F3-EFA0-4F92-818F-AE0870C7BBCE} = {BF440D82-F8CA-4699-A730-FA8F376359F0}
-		{8BFF91DA-96F2-41EB-998B-3940E487E19C} = {BF440D82-F8CA-4699-A730-FA8F376359F0}
-		{B11AB828-B382-4AB1-BDE9-2A8C3FA8957F} = {BF440D82-F8CA-4699-A730-FA8F376359F0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {13DDF5AC-8E89-4C42-80C6-E32CCFBDE1BB}
