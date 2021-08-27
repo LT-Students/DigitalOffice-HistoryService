@@ -10,6 +10,6 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider
     public interface IDataProvider : IBaseDataProvider
     {
         DbSet<DbService> Services { get; set; }
-        DbSet<DbServiceHistory> ServiceHistories { get; set; }
+        DbSet<DbServiceHistory> ServicesHistories { get; set; }
     }
 }

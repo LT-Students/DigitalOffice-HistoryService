@@ -25,15 +25,11 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Services", x => x.Id);
+                    table.UniqueConstraint("UX_History_Name_Unique", x => x.Name);
                 });
 
-            builder.AddUniqueConstraint(
-                name: $"UX_Name_unique",
-                table: DbService.TableName,
-                column: nameof(DbService.Name));
-
             builder.CreateTable(
-                name: DbServicesHistories.TableName,
+                name: DbServiceHistory.TableName,
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),

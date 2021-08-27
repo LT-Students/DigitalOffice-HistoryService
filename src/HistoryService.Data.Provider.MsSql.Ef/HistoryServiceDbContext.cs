@@ -7,7 +7,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef
     public class HistoryServiceDbContext : DbContext, IDataProvider
     {
         public DbSet<DbService> Services { get; set; }
-        public DbSet<DbServicesHistories> ServiceHistories { get; set; }
+        public DbSet<DbServiceHistory> ServicesHistories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

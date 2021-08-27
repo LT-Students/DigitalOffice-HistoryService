@@ -4,7 +4,7 @@ using System;
 
 namespace LT.DigitalOffice.HistoryService.Models.Db
 {
-    public class DbServicesHistories
+    public class DbServiceHistory
     {
         public const string TableName = "ServiceHistories";
 
@@ -19,12 +19,12 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
 
         public DbService Service { get; set; }
     }
-    public class DbServiceHistoryConfiguration : IEntityTypeConfiguration<DbServicesHistories>
+    public class DbServiceHistoryConfiguration : IEntityTypeConfiguration<DbServiceHistory>
     {
-        public void Configure(EntityTypeBuilder<DbServicesHistories> builder)
+        public void Configure(EntityTypeBuilder<DbServiceHistory> builder)
         {
             builder.
-                ToTable(DbServicesHistories.TableName);
+                ToTable(DbServiceHistory.TableName);
 
             builder.
                 HasKey(p => p.Id);

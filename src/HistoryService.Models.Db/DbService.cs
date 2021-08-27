@@ -21,11 +21,11 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
         public DateTime? ModifiedAtUtc { get; set; }
 
         [IgnoreParse]
-        public ICollection<DbServicesHistories> ServiceHistories { get; set; }
+        public ICollection<DbServiceHistory> ServiceHistories { get; set; }
 
         public DbService()
         {
-            ServiceHistories = new HashSet<DbServicesHistories>();
+            ServiceHistories = new HashSet<DbServiceHistory>();
         }
     }
 
