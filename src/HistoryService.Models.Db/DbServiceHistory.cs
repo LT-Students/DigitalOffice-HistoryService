@@ -6,7 +6,7 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
 {
     public class DbServiceHistory
     {
-        public const string TableName = "ServiceHistories";
+        public const string TableName = "ServicesHistories";
 
         public Guid Id { get; set; }
         public Guid ServiceId { get; set; }
