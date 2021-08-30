@@ -1,4 +1,5 @@
 using HealthChecks.UI.Client;
+using LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef;
 using LT.DigitalOffice.Kernel.Configurations;
 using LT.DigitalOffice.Kernel.Extensions;
 using LT.DigitalOffice.Kernel.Middlewares.ApiInformation;
@@ -7,6 +8,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -16,7 +18,7 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.HistoryService
 {
-  public class Startup : BaseApiInfo
+    public class Startup : BaseApiInfo
     {
         public const string CorsPolicyName = "LtDoCorsPolicy";
 
@@ -47,6 +49,17 @@ namespace LT.DigitalOffice.HistoryService
         }
 
         #endregion
+
+        private void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+
+            using var context = serviceScope.ServiceProvider.GetService<HistoryServiceDbContext>();
+
+            context.Database.Migrate();
+        }
 
         public Startup(IConfiguration configuration)
         {
@@ -81,10 +94,22 @@ namespace LT.DigitalOffice.HistoryService
                     });
             });
 
+            string connStr = Environment.GetEnvironmentVariable("ConnectionString");
+            if (string.IsNullOrEmpty(connStr))
+            {
+                connStr = Configuration.GetConnectionString("SQLConnectionString");
+            }
+
             services.AddHttpContextAccessor();
 
             services.AddHealthChecks()
-                .AddRabbitMqCheck();
+               .AddRabbitMqCheck()
+               .AddSqlServer(connStr);
+
+            services.AddDbContext<HistoryServiceDbContext>(options =>
+            {
+                options.UseSqlServer(connStr);
+            });
 
             services.Configure<TokenConfiguration>(Configuration.GetSection("CheckTokenMiddleware"));
             services.Configure<BaseServiceInfoConfig>(Configuration.GetSection(BaseServiceInfoConfig.SectionName));
@@ -95,6 +120,7 @@ namespace LT.DigitalOffice.HistoryService
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
+            services.AddMemoryCache();
             services.AddBusinessObjects();
 
             services.AddControllers();
@@ -104,6 +130,8 @@ namespace LT.DigitalOffice.HistoryService
 
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            UpdateDatabase(app);
+
             app.UseForwardedHeaders();
 
             app.UseExceptionsHandler(loggerFactory);
