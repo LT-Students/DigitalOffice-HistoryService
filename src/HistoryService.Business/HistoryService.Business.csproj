@@ -2,4 +2,11 @@
 
 	<Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
+	<ItemGroup>
+	  <ProjectReference Include="..\HistoryService.Data\HistoryService.Data.csproj" />
+	  <ProjectReference Include="..\HistoryService.Mappers\HistoryService.Mappers.csproj" />
+	  <ProjectReference Include="..\HistoryService.Models.Dto\HistoryService.Models.Dto.csproj" />
+	  <ProjectReference Include="..\HistoryService.Validation\HistoryService.Validation.csproj" />
+	</ItemGroup>
+
 </Project>

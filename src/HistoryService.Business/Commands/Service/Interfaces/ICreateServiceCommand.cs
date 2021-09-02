@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.Kernel.Attributes;
+﻿using LT.DigitalOffice.HistoryService.Models.Dto;
+using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.Kernel.Responses;
 using System;
 

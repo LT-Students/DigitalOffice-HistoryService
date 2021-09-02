@@ -19,9 +19,24 @@ namespace LT.DigitalOffice.HistoryService
 #endif
                 .Build();
 
+            string seqServerUrl = Environment.GetEnvironmentVariable("seqServerUrl");
+            if (string.IsNullOrEmpty(seqServerUrl))
+            {
+                seqServerUrl = configuration["Serilog:WriteTo:1:Args:serverUrl"];
+            }
+
+            string seqApiKey = Environment.GetEnvironmentVariable("seqApiKey");
+            if (string.IsNullOrEmpty(seqApiKey))
+            {
+                seqApiKey = configuration["Serilog:WriteTo:1:Args:apiKey"];
+            }
+
             Log.Logger = new LoggerConfiguration().ReadFrom
                 .Configuration(configuration)
                 .Enrich.WithProperty("Service", "HistoryService")
+                .WriteTo.Seq(
+                    serverUrl: seqServerUrl,
+                    apiKey: seqApiKey)
                 .CreateLogger();
 
             try

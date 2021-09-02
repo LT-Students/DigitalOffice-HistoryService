@@ -73,7 +73,7 @@ namespace LT.DigitalOffice.HistoryService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<BaseRabbitMqConfig>();
 
-            Version = "1.0.0";
+            Version = "1.1.0";
             Description = "HistoryService is an API that intended to find services update history information.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
@@ -94,15 +94,16 @@ namespace LT.DigitalOffice.HistoryService
                     });
             });
 
+            services.AddHttpContextAccessor();
+
             string connStr = Environment.GetEnvironmentVariable("ConnectionString");
             if (string.IsNullOrEmpty(connStr))
             {
                 connStr = Configuration.GetConnectionString("SQLConnectionString");
             }
 
-            services.AddHttpContextAccessor();
-
-            services.AddHealthChecks()
+            services
+               .AddHealthChecks()
                .AddRabbitMqCheck()
                .AddSqlServer(connStr);
 
@@ -124,6 +125,10 @@ namespace LT.DigitalOffice.HistoryService
             services.AddBusinessObjects();
 
             services.AddControllers();
+
+            services
+                .AddControllersWithViews()
+                .AddNewtonsoftJson();
 
             ConfigureMassTransit(services);
         }
@@ -147,6 +152,7 @@ namespace LT.DigitalOffice.HistoryService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers().RequireCors(CorsPolicyName);
+
                 endpoints.MapHealthChecks($"/{_serviceInfoConfig.Id}/hc", new HealthCheckOptions
                 {
                     ResultStatusCodes = new Dictionary<HealthStatus, int>
