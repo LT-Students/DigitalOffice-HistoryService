@@ -1,13 +1,11 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto;
 using LT.DigitalOffice.HistoryService.Validation.Service.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using System;
@@ -20,7 +18,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         private readonly IServiceRepository _repository;
         private readonly IDbServiceMapper _mapperService;
         private readonly IAccessValidator _accessValidator;
-        public readonly ICreateServiceRequestValidator _validator;
+        private readonly ICreateServiceRequestValidator _validator;
 
         public CreateServiceCommand(
             IDbServiceMapper mapperService,
@@ -36,14 +34,16 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
         public OperationResultResponse<Guid> Execute(CreateServiceRequest request)
         {
-            if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
-            {
-                throw new ForbiddenException("Not enough rights.");
-            }
-
             OperationResultResponse<Guid> response = new();
 
-            if (_repository.IsServiceNameExist(request.Name))
+            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
+            {
+                response.Status = OperationResultStatusType.Failed;
+                response.Errors.Add("Not enough rights");
+                return response;
+            }
+
+            if (_repository.DoesServiceNameExist(request.Name))
             {
                 response.Status = OperationResultStatusType.Failed;
                 response.Errors.Add($"Service with name '{request.Name}' already exist");
@@ -52,9 +52,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
             _validator.ValidateAndThrowCustom(request);
 
-            DbService dbService = _mapperService.Map(request);
-
-            response.Body = _repository.Create(dbService);
+            response.Body = _repository.Create(_mapperService.Map(request));
 
             response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
 

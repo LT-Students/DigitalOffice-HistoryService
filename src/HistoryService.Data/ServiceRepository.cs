@@ -17,7 +17,7 @@ namespace LT.DigitalOffice.HistoryService.Data
             _provider = provider;
         }
 
-        public bool IsServiceNameExist(string name)
+        public bool DoesServiceNameExist(string name)
         {
             return _provider.Services.Any(p => p.Name.Contains(name));
         }

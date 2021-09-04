@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.HistoryService.Controllers
         }
 
         [HttpGet("find")]
-        public List<ServiceInfo> Find(
+        public OperationResultResponse<List<ServiceInfo>> Find(
            [FromServices] IFindServiceCommand command)
         {
             return command.Execute();

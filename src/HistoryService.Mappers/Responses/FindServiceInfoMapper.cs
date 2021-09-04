@@ -5,7 +5,7 @@ using System;
 
 namespace LT.DigitalOffice.HistoryService.Mappers.Responses
 {
-    public class FindServiceResponseMapper : IFindServiceResponseMapper
+    public class FindServiceInfoMapper : IFindServiceInfoMapper
     {
         public ServiceInfo Map(DbService dbService)
         {
