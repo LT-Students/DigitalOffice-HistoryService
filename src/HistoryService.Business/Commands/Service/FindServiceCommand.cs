@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
             if (response.Body == null)
             {
-                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
 
                 response.Status = OperationResultStatusType.Failed;
                 response.Errors.Add("Services are not exist");

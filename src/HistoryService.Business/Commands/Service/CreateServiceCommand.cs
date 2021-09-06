@@ -41,7 +41,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         {
             if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
             {
-                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
                 return new OperationResultResponse<Guid>
                 {
@@ -84,7 +84,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
             response.Body = _repository.Create(_mapperService.Map(request));
             if (response.Body == Guid.Empty)
             {
-                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
 
                 response.Status = OperationResultStatusType.Failed;
                 return response;
