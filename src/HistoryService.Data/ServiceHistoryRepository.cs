@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.HistoryService.Data
         {
             if (dbServiceHistory == null)
             {
-                throw new ArgumentNullException(nameof(dbServiceHistory));
+                return Guid.Empty;
             }
 
             _provider.ServicesHistories.Add(dbServiceHistory);

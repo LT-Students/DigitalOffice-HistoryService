@@ -5,33 +5,47 @@ using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
     public class FindServiceCommand : IFindServiceCommand
     {
         private readonly IServiceRepository _repository;
-        private readonly IFindServiceInfoMapper _mapper;
+        private readonly IFindResultResponseMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public FindServiceCommand(
             IServiceRepository repository,
-            IFindServiceInfoMapper mapper)
+            IFindResultResponseMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public OperationResultResponse<List<ServiceInfo>> Execute()
+        public OperationResultResponse<List<FindResultResponse>> Execute()
         {
-            OperationResultResponse<List<ServiceInfo>> response = new();
+            OperationResultResponse<List<FindResultResponse>> response = new();
 
             List<DbService> dbServiceList = _repository.Find();
- 
+
             response.Body = dbServiceList.Select(x => _mapper.Map(x)).ToList();
 
-            response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
+            if (response.Body == null)
+            {
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                response.Status = OperationResultStatusType.Failed;
+                response.Errors.Add("Services are not exist");
+                return response;
+            }
+
+            response.Status = OperationResultStatusType.FullSuccess;
 
             return response;
         }

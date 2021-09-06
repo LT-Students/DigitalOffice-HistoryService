@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces
     [AutoInject]
     public interface IFindServiceCommand
     {
-        OperationResultResponse<List<ServiceInfo>> Execute();
+        OperationResultResponse<List<FindResultResponse>> Execute();
     }
 }

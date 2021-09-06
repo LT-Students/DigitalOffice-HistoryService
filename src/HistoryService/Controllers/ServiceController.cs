@@ -29,16 +29,11 @@ namespace LT.DigitalOffice.HistoryService.Controllers
         {
             var result = command.Execute(request);
 
-            if (result.Status != OperationResultStatusType.Failed)
-            {
-                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-            }
-
             return result;
         }
 
         [HttpGet("find")]
-        public OperationResultResponse<List<ServiceInfo>> Find(
+        public OperationResultResponse<List<FindResultResponse>> Find(
            [FromServices] IFindServiceCommand command)
         {
             return command.Execute();
