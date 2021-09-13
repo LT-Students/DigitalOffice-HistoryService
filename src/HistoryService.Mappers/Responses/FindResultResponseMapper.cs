@@ -5,16 +5,16 @@ using System;
 
 namespace LT.DigitalOffice.HistoryService.Mappers.Responses
 {
-    public class FindServiceResponseMapper : IFindServiceResponseMapper
+    public class FindResultResponseMapper : IFindResultResponseMapper
     {
-        public ServiceInfo Map(DbService dbService)
+        public FindResultResponse Map(DbService dbService)
         {
             if (dbService == null)
             {
-                throw new ArgumentNullException(nameof(dbService));
+                return null;
             }
 
-            return new ServiceInfo
+            return new FindResultResponse
             {
                 Id = dbService.Id,
                 Name = dbService. Name,

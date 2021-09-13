@@ -17,16 +17,16 @@ namespace LT.DigitalOffice.HistoryService.Data
             _provider = provider;
         }
 
-        public bool IsServiceNameExist(string name)
+        public bool DoesServiceNameExist(string name)
         {
-            return _provider.Services.Any(p => p.Name.Contains(name));
+            return _provider.Services.Any(s => s.Name.Contains(name));
         }
 
         public Guid Create(DbService dbService)
         {
             if (dbService == null)
             {
-                throw new ArgumentNullException(nameof(dbService));
+                return Guid.Empty;
             }
 
             _provider.Services.Add(dbService);

@@ -2,7 +2,7 @@
 
 namespace LT.DigitalOffice.HistoryService.Models.Dto.Responses
 {
-    public record ServiceInfo
+    public record FindResultResponse
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

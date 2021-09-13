@@ -9,10 +9,10 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
         public CreateServiceRequestValidator()
         {
             RuleFor(service => service.Name.Trim())
-                    .NotEmpty()
-                    .WithMessage("Name cannot be empty.")
-                    .MaximumLength(30)
-                    .WithMessage("Name is too long.");
+                .NotEmpty()
+                .WithMessage("Name cannot be empty.")
+                .MaximumLength(30)
+                .WithMessage("Name is too long.");
         }
     }
 }
