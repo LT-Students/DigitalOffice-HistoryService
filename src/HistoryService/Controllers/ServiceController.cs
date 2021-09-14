@@ -23,7 +23,7 @@ namespace LT.DigitalOffice.HistoryService.Controllers
         }
 
         [HttpPost("create")]
-        public OperationResultResponse<Guid> Create(
+        public OperationResultResponse<Guid?> Create(
             [FromServices] ICreateServiceCommand command,
             [FromBody] CreateServiceRequest request)
         {

@@ -32,9 +32,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         {
             OperationResultResponse<List<FindResultResponse>> response = new();
 
-            List<DbService> dbServiceList = _repository.Find();
-
-            response.Body = dbServiceList.Select(x => _mapper.Map(x)).ToList();
+            response.Body = _repository.Find().Select(x => _mapper.Map(x)).ToList();
 
             if (response.Body == null)
             {

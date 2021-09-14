@@ -22,11 +22,11 @@ namespace LT.DigitalOffice.HistoryService.Data
             return _provider.Services.Any(s => s.Name.Contains(name));
         }
 
-        public Guid Create(DbService dbService)
+        public Guid? Create(DbService dbService)
         {
             if (dbService == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
             _provider.Services.Add(dbService);
