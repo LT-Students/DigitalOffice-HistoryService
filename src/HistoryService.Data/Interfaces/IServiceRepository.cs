@@ -8,7 +8,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
     [AutoInject]
     public interface IServiceRepository
     {
-        Guid Create(DbService dbService);
+        Guid? Create(DbService dbService);
 
         bool DoesServiceNameExist(string name);
 

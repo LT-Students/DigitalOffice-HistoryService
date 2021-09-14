@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces
     [AutoInject]
     public interface ICreateServiceCommand
     {
-        OperationResultResponse<Guid> Execute(CreateServiceRequest request);
+        OperationResultResponse<Guid?> Execute(CreateServiceRequest request);
     }
 }
