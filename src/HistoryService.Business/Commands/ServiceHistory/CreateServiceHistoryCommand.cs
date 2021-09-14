@@ -7,11 +7,12 @@ using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -20,43 +21,70 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         private readonly IServiceHistoryRepository _repository;
         private readonly IDbServiceHistoryMapper _mapperServiceHistory;
         private readonly IAccessValidator _accessValidator;
-        public readonly ICreateServiceHistoryRequestValidator _validator;
+        private readonly ICreateServiceHistoryRequestValidator _validator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public CreateServiceHistoryCommand(
             IDbServiceHistoryMapper mapperServiceHistory,
             IServiceHistoryRepository repository,
             IAccessValidator accessValidator,
-            ICreateServiceHistoryRequestValidator validator)
+            ICreateServiceHistoryRequestValidator validator,
+            IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _mapperServiceHistory = mapperServiceHistory;
             _accessValidator = accessValidator;
             _validator = validator;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public OperationResultResponse<Guid> Execute(CreateServiceHistoryRequest request)
         {
-            if (!(_accessValidator.IsAdmin() || _accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
+            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
             {
-                throw new ForbiddenException("Not enough rights.");
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
+                return new OperationResultResponse<Guid>
+                {
+                    Status = OperationResultStatusType.Failed,
+                    Errors = new() { "Not enough rights." }
+                };
             }
 
             OperationResultResponse<Guid> response = new();
 
-            if (_repository.IsServiceHistoryVersionExist(request.Version))
+            if (_repository.DoesServiceHistoryVersionExist(request.Version))
             {
                 response.Status = OperationResultStatusType.Failed;
                 response.Errors.Add($"History version '{request.Version}' already exist");
                 return response;
             }
 
-            _validator.ValidateAndThrowCustom(request);
+            if (!_validator.ValidateCustom(request, out List<string> errors))
+            {
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-            DbServiceHistory dbServiceHistory = _mapperServiceHistory.Map(request);
+                return new OperationResultResponse<Guid>
+                {
+                    Status = OperationResultStatusType.Failed,
+                    Errors = errors
+                };
+             }
 
-            response.Body = _repository.Create(dbServiceHistory);
+            response.Body = _repository.Create(_mapperServiceHistory.Map(request));
+            if (response.Body == Guid.Empty)
+            {
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
 
-            response.Status = response.Errors.Any() ? OperationResultStatusType.PartialSuccess : OperationResultStatusType.FullSuccess;
+                response.Status = OperationResultStatusType.Failed;
+                return response;
+            }
+
+            _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+            response.Status = OperationResultStatusType.FullSuccess;
 
             return response;
         }

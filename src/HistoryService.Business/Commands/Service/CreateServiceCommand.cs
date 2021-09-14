@@ -81,7 +81,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
                 return response;
             }
 
-            response.Body = _repository.Create(_mapperService.Map(request));
+            response.Body = _repository.Create(dbServise);
             if (response.Body == Guid.Empty)
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;

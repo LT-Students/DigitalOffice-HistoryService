@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
     {
         Guid Create(DbServiceHistory dbServiceHistory);
 
-        bool IsServiceHistoryVersionExist(string version);
+        bool DoesServiceHistoryVersionExist(string version);
 
         IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, int skipCount, int takeCount, out int totalCount);
     }

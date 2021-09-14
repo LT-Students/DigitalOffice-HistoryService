@@ -5,9 +5,11 @@ using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Models;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -15,20 +17,29 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
     {
         private readonly IServiceHistoryRepository _repository;
         private readonly IFindServiceHistoryResponseMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public FindServiceHistoryCommand(
             IServiceHistoryRepository repository,
-            IFindServiceHistoryResponseMapper mapper)
+            IFindServiceHistoryResponseMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public FindResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter, int skipCount, int takeCount)
         {
             if (filter == null)
             {
-                throw new ArgumentNullException(nameof(filter));
+                _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                return new FindResponse<ServiceHistoryInfo>
+                {
+                    Errors = new List<string> { "Service name or version are not specified" }
+                };
             }
 
             IEnumerable<DbServiceHistory> dbServiceHistory = _repository.Find(filter, skipCount, takeCount, out int totalCount);

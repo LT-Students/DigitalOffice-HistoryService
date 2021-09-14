@@ -19,7 +19,7 @@ namespace LT.DigitalOffice.HistoryService.Data
             _provider = provider;
         }
 
-        public bool IsServiceHistoryVersionExist(string version)
+        public bool DoesServiceHistoryVersionExist(string version)
         {
             return _provider.ServicesHistories.Any(p => p.Version.Contains(version));
         }
@@ -39,9 +39,12 @@ namespace LT.DigitalOffice.HistoryService.Data
 
         public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, int skipCount, int takeCount, out int totalCount)
         {
+            var dbServicesHistories = _provider.ServicesHistories
+              .AsQueryable();
+
             if (skipCount < 0)
             {
-                throw new BadRequestException("Skip count can't be less than 0.");
+                dbServicesHistories = null;
             }
 
             if (takeCount < 1)
@@ -54,8 +57,8 @@ namespace LT.DigitalOffice.HistoryService.Data
                 throw new ArgumentNullException(nameof(filter));
             }
 
-            var dbServicesHistories = _provider.ServicesHistories
-                .AsQueryable();
+            /*var dbServicesHistories = _provider.ServicesHistories
+                .AsQueryable();*/
 
             if (filter.ServiceId.HasValue)
             {
