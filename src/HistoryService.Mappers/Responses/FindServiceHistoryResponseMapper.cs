@@ -11,7 +11,7 @@ namespace LT.DigitalOffice.HistoryService.Mappers.Responses
         {
             if (dbServiceHistory == null)
             {
-                throw new ArgumentNullException(nameof(dbServiceHistory));
+                return null;
             }
 
             return new ServiceHistoryInfo

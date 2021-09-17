@@ -8,7 +8,6 @@ using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Controllers
@@ -25,7 +24,7 @@ namespace LT.DigitalOffice.HistoryService.Controllers
         }
 
         [HttpPost("create")]
-        public OperationResultResponse<Guid> Create(
+        public OperationResultResponse<Guid?> Create(
             [FromServices] ICreateServiceHistoryCommand command,
             [FromBody] CreateServiceHistoryRequest request)
         {

@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Inter
     [AutoInject]
     public interface ICreateServiceHistoryCommand
     {
-        OperationResultResponse<Guid> Execute(CreateServiceHistoryRequest request);
+        OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request);
     }
 }

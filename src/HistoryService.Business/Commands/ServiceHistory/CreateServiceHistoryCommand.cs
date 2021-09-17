@@ -40,20 +40,20 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
         }
 
-        public OperationResultResponse<Guid> Execute(CreateServiceHistoryRequest request)
+        public OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request)
         {
             if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-                return new OperationResultResponse<Guid>
+                return new OperationResultResponse<Guid?>
                 {
                     Status = OperationResultStatusType.Failed,
                     Errors = new() { "Not enough rights." }
                 };
             }
 
-            OperationResultResponse<Guid> response = new();
+            OperationResultResponse<Guid?> response = new();
 
             if (_repository.DoesServiceHistoryVersionExist(request.Version))
             {
@@ -66,25 +66,25 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-                return new OperationResultResponse<Guid>
+                return new OperationResultResponse<Guid?>
                 {
                     Status = OperationResultStatusType.Failed,
                     Errors = errors
                 };
-             }
+            }
+
+            _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+            response.Status = OperationResultStatusType.FullSuccess;
 
             response.Body = _repository.Create(_mapperServiceHistory.Map(request));
-            if (response.Body == Guid.Empty)
+            if (response.Body == null)
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
 
                 response.Status = OperationResultStatusType.Failed;
                 return response;
             }
-
-            _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
-            response.Status = OperationResultStatusType.FullSuccess;
 
             return response;
         }
