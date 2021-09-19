@@ -4,10 +4,11 @@ WORKDIR /app
 COPY . ./
 RUN dotnet restore
 
-COPY . ./
+COPY . ./https://github.com/LT-Students/DigitalOffice-HistoryService/blob/develop/Dockerfile
 RUN dotnet publish -c Release -o out
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-buster-slim AS base
 WORKDIR /app
 COPY --from=build /app/out .
+EXPOSE 80
 ENTRYPOINT ["dotnet", "LT.DigitalOffice.HistoryService.dll"]
