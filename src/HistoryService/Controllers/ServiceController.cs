@@ -15,13 +15,6 @@ namespace LT.DigitalOffice.HistoryService.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public ServiceController(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
-
         [HttpPost("create")]
         public OperationResultResponse<Guid?> Create(
             [FromServices] ICreateServiceCommand command,
