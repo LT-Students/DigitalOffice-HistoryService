@@ -8,6 +8,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Inter
     [AutoInject]
     public interface IFindServiceHistoryCommand
     {
-        FindResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter, int skipCount, int takeCount);
+        FindResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter);
     }
 }

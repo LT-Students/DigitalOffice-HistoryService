@@ -28,6 +28,7 @@ namespace LT.DigitalOffice.HistoryService.Mappers.Db
                 Id = Guid.NewGuid(),
                 Content = request.Content,
                 Version = request.Version.Trim(),
+                ServiceId = request.ServiceId,
                 CreatedBy = _httpContextAccessor.HttpContext.GetUserId(),
                 CreatedAtUtc = DateTime.UtcNow
             };

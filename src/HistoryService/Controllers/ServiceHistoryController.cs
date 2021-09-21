@@ -41,11 +41,9 @@ namespace LT.DigitalOffice.HistoryService.Controllers
         [HttpGet("find")]
         public FindResponse<ServiceHistoryInfo> Find(
            [FromServices] IFindServiceHistoryCommand command,
-           [FromQuery] FindServicesHistoriesFilter filter,
-           [FromQuery] int skipCount,
-           [FromQuery] int takeCount)
+           [FromQuery] FindServicesHistoriesFilter filter)
         {
-            return command.Execute(filter, skipCount, takeCount);
+            return command.Execute(filter);
         }
     }
 }

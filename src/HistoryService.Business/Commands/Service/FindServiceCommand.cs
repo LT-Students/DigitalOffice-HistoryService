@@ -1,7 +1,6 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces;
-using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
@@ -12,7 +11,7 @@ using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
-    public class FindServiceCommand : IFindServiceCommand
+  public class FindServiceCommand : IFindServiceCommand
     {
         private readonly IServiceRepository _repository;
         private readonly IFindResultResponseMapper _mapper;

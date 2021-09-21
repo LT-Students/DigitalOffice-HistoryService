@@ -42,7 +42,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
         public OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request)
         {
-            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
+            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistories)))
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -55,10 +55,10 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
             OperationResultResponse<Guid?> response = new();
 
-            if (_repository.DoesServiceHistoryVersionExist(request.Version))
+            if (_repository.DoesServiceHistoryVersionExist(request.Version, request.ServiceId))
             {
                 response.Status = OperationResultStatusType.Failed;
-                response.Errors.Add($"History version '{request.Version}' already exist");
+                response.Errors.Add($"History version: '{request.Version}' for this service:'{request.ServiceId}' already exist");
                 return response;
             }
 

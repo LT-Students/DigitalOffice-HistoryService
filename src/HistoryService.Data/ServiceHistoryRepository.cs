@@ -2,14 +2,13 @@
 using LT.DigitalOffice.HistoryService.Data.Provider;
 using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
-using LT.DigitalOffice.Kernel.Exceptions.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LT.DigitalOffice.HistoryService.Data
 {
-    public class ServiceHistoryRepository : IServiceHistoryRepository
+  public class ServiceHistoryRepository : IServiceHistoryRepository
     {
         private readonly IDataProvider _provider;
 
@@ -19,9 +18,9 @@ namespace LT.DigitalOffice.HistoryService.Data
             _provider = provider;
         }
 
-        public bool DoesServiceHistoryVersionExist(string version)
+        public bool DoesServiceHistoryVersionExist(string version, Guid id)
         {
-            return _provider.ServicesHistories.Any(p => p.Version.Contains(version));
+           return _provider.ServicesHistories.Any(sh => id == sh.ServiceId && sh.Version.Contains(version));
         }
 
         public Guid Create(DbServiceHistory dbServiceHistory)
@@ -37,28 +36,10 @@ namespace LT.DigitalOffice.HistoryService.Data
             return dbServiceHistory.Id;
         }
 
-        public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, int skipCount, int takeCount, out int totalCount)
+        public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
         {
             var dbServicesHistories = _provider.ServicesHistories
               .AsQueryable();
-
-            if (skipCount < 0)
-            {
-                dbServicesHistories = null;
-            }
-
-            if (takeCount < 1)
-            {
-                throw new BadRequestException("Take count can't be equal or less than 0.");
-            }
-
-            if (filter == null)
-            {
-                throw new ArgumentNullException(nameof(filter));
-            }
-
-            /*var dbServicesHistories = _provider.ServicesHistories
-                .AsQueryable();*/
 
             if (filter.ServiceId.HasValue)
             {
@@ -71,7 +52,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
             totalCount = dbServicesHistories.Count();
 
-            return dbServicesHistories.Skip(skipCount).Take(takeCount).ToList();
+            return dbServicesHistories.Skip(filter.skipCount).Take(filter.takeCount).ToList();
         }
     }
 }

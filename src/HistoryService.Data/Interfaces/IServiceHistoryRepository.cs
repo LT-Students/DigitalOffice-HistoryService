@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 {
-    [AutoInject]
+  [AutoInject]
     public interface IServiceHistoryRepository
     {
         Guid Create(DbServiceHistory dbServiceHistory);
 
-        bool DoesServiceHistoryVersionExist(string version);
+        bool DoesServiceHistoryVersionExist(string version, Guid id);
 
-        IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, int skipCount, int takeCount, out int totalCount);
+        IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount);
     }
 }
