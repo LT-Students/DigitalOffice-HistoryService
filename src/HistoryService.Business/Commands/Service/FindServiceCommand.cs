@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         public OperationResultResponse<List<FindResultResponse>> Execute()
         {
 
-            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistroies)))
+            if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistories)))
             {
                 _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
