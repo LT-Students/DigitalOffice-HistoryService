@@ -7,6 +7,6 @@ namespace LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces
     [AutoInject]
     public interface IFindResultResponseMapper
     {
-        FindResultResponse Map(DbService dbService);
+        ServiceInfo Map(DbService dbService);
     }
 }
