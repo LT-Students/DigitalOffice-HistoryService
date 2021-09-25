@@ -7,14 +7,14 @@ namespace LT.DigitalOffice.HistoryService.Mappers.Responses
 {
     public class FindResultResponseMapper : IFindResultResponseMapper
     {
-        public FindResultResponse Map(DbService dbService)
+        public ServiceInfo Map(DbService dbService)
         {
             if (dbService == null)
             {
                 return null;
             }
 
-            return new FindResultResponse
+            return new ServiceInfo
             {
                 Id = dbService.Id,
                 Name = dbService. Name,

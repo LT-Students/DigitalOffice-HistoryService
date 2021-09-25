@@ -64,6 +64,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       if (_repository.DoesServiceNameExist(request.Name))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+
         return new OperationResultResponse<Guid?>
         {
           Status = OperationResultStatusType.Failed,
