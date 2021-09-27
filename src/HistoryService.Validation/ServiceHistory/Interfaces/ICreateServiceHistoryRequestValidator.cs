@@ -4,8 +4,8 @@ using LT.DigitalOffice.Kernel.Attributes;
 
 namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces
 {
-    [AutoInject]
-    public interface ICreateServiceHistoryRequestValidator : IValidator<CreateServiceHistoryRequest>
-    {
-    }
+  [AutoInject]
+  public interface ICreateServiceHistoryRequestValidator : IValidator<CreateServiceHistoryRequest>
+  {
+  }
 }

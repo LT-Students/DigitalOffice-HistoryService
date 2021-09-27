@@ -4,9 +4,9 @@ using LT.DigitalOffice.Kernel.Attributes;
 
 namespace LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces
 {
-    [AutoInject]
-    public interface IFindResultResponseMapper
-    {
-        ServiceInfo Map(DbService dbService);
-    }
+  [AutoInject]
+  public interface IFindResultResponseMapper
+  {
+    ServiceInfo Map(DbService dbService);
+  }
 }

@@ -4,9 +4,9 @@ using LT.DigitalOffice.Kernel.Attributes;
 
 namespace LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces
 {
-    [AutoInject]
-    public interface IDbServiceMapper
-    {
-        DbService Map(CreateServiceRequest request);
-    }
+  [AutoInject]
+  public interface IDbServiceMapper
+  {
+    DbService Map(CreateServiceRequest request);
+  }
 }

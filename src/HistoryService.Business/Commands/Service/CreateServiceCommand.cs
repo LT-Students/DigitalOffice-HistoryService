@@ -24,11 +24,11 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CreateServiceCommand(
-        IDbServiceMapper mapperService,
-        IServiceRepository repository,
-        IAccessValidator accessValidator,
-        ICreateServiceRequestValidator validator,
-        IHttpContextAccessor httpContextAccessor)
+      IDbServiceMapper mapperService,
+      IServiceRepository repository,
+      IAccessValidator accessValidator,
+      ICreateServiceRequestValidator validator,
+      IHttpContextAccessor httpContextAccessor)
     {
       _repository = repository;
       _mapperService = mapperService;
@@ -82,7 +82,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
       if (response.Body == null)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
         return response;

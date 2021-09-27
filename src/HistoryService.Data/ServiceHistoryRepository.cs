@@ -38,8 +38,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
         public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
         {
-            var dbServicesHistories = _provider.ServicesHistories
-              .AsQueryable();
+            var dbServicesHistories = _provider.ServicesHistories.AsQueryable();
 
             if (filter.ServiceId.HasValue)
             {

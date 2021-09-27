@@ -73,7 +73,7 @@ namespace LT.DigitalOffice.HistoryService
                 .GetSection(BaseRabbitMqConfig.SectionName)
                 .Get<BaseRabbitMqConfig>();
 
-            Version = "1.1.0.0";
+            Version = "1.0.0.0";
             Description = "HistoryService is an API that intended to find services update history information.";
             StartTime = DateTime.UtcNow;
             ApiName = $"LT Digital Office - {_serviceInfoConfig.Name}";
@@ -121,7 +121,6 @@ namespace LT.DigitalOffice.HistoryService
                     ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            services.AddMemoryCache();
             services.AddBusinessObjects();
 
             services.AddControllers();
