@@ -10,7 +10,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
     {
         Guid? Create(DbService dbService);
 
-        bool DoesServiceNameExist(string name);
+        bool DoesNameExist(string name);
 
         List<DbService> Find();
     }

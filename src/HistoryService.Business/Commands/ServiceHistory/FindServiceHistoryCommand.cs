@@ -1,11 +1,9 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces;
-using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
@@ -41,12 +39,13 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
     public FindResultResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter)
     {
-      if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistories)))
+      if (!_accessValidator.IsAdmin())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
         return new FindResultResponse<ServiceHistoryInfo>
         {
+          Status = OperationResultStatusType.Failed,
           Errors = new List<string> { "Not enough rights." }
         };
       }
@@ -73,11 +72,9 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      IEnumerable<DbServiceHistory> dbServiceHistory = _repository.Find(filter, out int totalCount);
-
       FindResultResponse <ServiceHistoryInfo> response = new();
 
-      response.Body = dbServiceHistory.Select(_mapper.Map).ToList();
+      response.Body = _repository.Find(filter, out int totalCount).Select(_mapper.Map).ToList();
 
       response.TotalCount = totalCount;
 

@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
     public OperationResultResponse<Guid?> Execute(CreateServiceRequest request)
     {
-      if (!(_accessValidator.IsAdmin()))
+      if (!_accessValidator.IsAdmin())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -61,17 +61,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      if (_repository.DoesServiceNameExist(request.Name))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
-
-        return new OperationResultResponse<Guid?>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Service with name '{request.Name}' already exist." }
-        };
-      }
-
       OperationResultResponse<Guid?> response = new();
 
       response.Body = _repository.Create(_mapperService.Map(request));
@@ -85,7 +74,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
       return response;

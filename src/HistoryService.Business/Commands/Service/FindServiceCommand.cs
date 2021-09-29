@@ -47,8 +47,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
       response.Body = _repository.Find().Select(_mapper.Map).ToList();
 
-      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Found;
-
       response.Status = OperationResultStatusType.FullSuccess;
 
       if (response.Body == null)
@@ -56,7 +54,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
       return response;

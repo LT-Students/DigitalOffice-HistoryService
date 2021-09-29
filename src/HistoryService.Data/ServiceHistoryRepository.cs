@@ -18,7 +18,7 @@ namespace LT.DigitalOffice.HistoryService.Data
       _provider = provider;
     }
 
-    public bool DoesServiceHistoryVersionExist(string version, Guid id)
+    public bool DoesVersionExist(string version, Guid id)
     {
       return _provider.ServicesHistories.Any(sh => id == sh.ServiceId && sh.Version.Contains(version));
     }
@@ -38,7 +38,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
     public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
     {
-      var dbServicesHistories = _provider.ServicesHistories.AsQueryable();
+      IQueryable<DbServiceHistory> dbServicesHistories = _provider.ServicesHistories.AsQueryable();
 
       if (filter.ServiceId.HasValue)
       {

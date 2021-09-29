@@ -1,11 +1,9 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
-using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
@@ -24,7 +22,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
     private readonly ICreateServiceHistoryRequestValidator _validator;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-
     public CreateServiceHistoryCommand(
       IDbServiceHistoryMapper mapperServiceHistory,
       IServiceHistoryRepository repository,
@@ -41,7 +38,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
     public OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request)
     {
-      if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistories)))
+      if (!_accessValidator.IsAdmin())
       {
           _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -53,15 +50,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       }
 
       OperationResultResponse<Guid?> response = new();
-
-      if (_repository.DoesServiceHistoryVersionExist(request.Version, request.ServiceId))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
-
-        response.Status = OperationResultStatusType.Failed;
-        response.Errors.Add($"History version: '{request.Version}' for this service:'{request.ServiceId}' already exist");
-        return response;
-      }
 
       if (!_validator.ValidateCustom(request, out List<string> errors))
       {
@@ -85,7 +73,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
       return response;

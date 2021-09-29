@@ -16,7 +16,6 @@ namespace LT.DigitalOffice.HistoryService.Mappers.Responses
       return new ServiceHistoryInfo
       {
         Id = dbServiceHistory.Id,
-        ServiceId = dbServiceHistory.ServiceId,
         Version = dbServiceHistory.Version,
         Content = dbServiceHistory.Content,
         CreatedBy = dbServiceHistory.CreatedBy,

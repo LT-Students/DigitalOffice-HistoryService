@@ -3,6 +3,7 @@
 	<Import Project="$(ProjectDir)..\..\Common.Configurations.targets" />
 
 	<ItemGroup>
+	  <ProjectReference Include="..\HistoryService.Data\HistoryService.Data.csproj" />
 	  <ProjectReference Include="..\HistoryService.Models.Dto\HistoryService.Models.Dto.csproj" />
 	</ItemGroup>
 
