@@ -24,11 +24,11 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public CreateServiceCommand(
-        IDbServiceMapper mapperService,
-        IServiceRepository repository,
-        IAccessValidator accessValidator,
-        ICreateServiceRequestValidator validator,
-        IHttpContextAccessor httpContextAccessor)
+      IDbServiceMapper mapperService,
+      IServiceRepository repository,
+      IAccessValidator accessValidator,
+      ICreateServiceRequestValidator validator,
+      IHttpContextAccessor httpContextAccessor)
     {
       _repository = repository;
       _mapperService = mapperService;
@@ -39,7 +39,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
     public OperationResultResponse<Guid?> Execute(CreateServiceRequest request)
     {
-      if (!(_accessValidator.HasRights(Rights.AddEditRemoveHistories)))
+      if (!_accessValidator.IsAdmin())
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -61,30 +61,19 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      if (_repository.DoesServiceNameExist(request.Name))
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
-        return new OperationResultResponse<Guid?>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Service with name '{request.Name}' already exist." }
-        };
-      }
-
       OperationResultResponse<Guid?> response = new();
+
+      response.Body = _repository.Create(_mapperService.Map(request));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       response.Status = OperationResultStatusType.FullSuccess;
 
-      response.Body = _repository.Create(_mapperService.Map(request));
-
       if (response.Body == null)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         response.Status = OperationResultStatusType.Failed;
-        return response;
       }
 
       return response;

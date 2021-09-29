@@ -2,12 +2,10 @@
 
 namespace LT.DigitalOffice.HistoryService.Models.Dto.Responses
 {
-  public record ServiceHistoryInfo
+  public record ServiceInfo
   {
     public Guid Id { get; set; }
-    public ServiceInfo Service { get; set; }
-    public string Version { get; set; }
-    public string Content { get; set; }
+    public string Name { get; set; }
     public Guid CreatedBy { get; set; }
     public DateTime CreatedAtUtc { get; set; }
   }

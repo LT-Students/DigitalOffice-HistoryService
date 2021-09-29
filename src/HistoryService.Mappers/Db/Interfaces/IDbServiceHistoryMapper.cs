@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces
 {
-    [AutoInject]
-    public interface IDbServiceHistoryMapper
-    {
-        DbServiceHistory Map(CreateServiceHistoryRequest request);
-    }
+  [AutoInject]
+  public interface IDbServiceHistoryMapper
+  {
+    DbServiceHistory Map(CreateServiceHistoryRequest request);
+  }
 }

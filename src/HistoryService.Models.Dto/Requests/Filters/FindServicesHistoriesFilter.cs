@@ -4,12 +4,12 @@ using System;
 
 namespace LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters
 {
-    public record FindServicesHistoriesFilter : BaseFindRequest
+  public record FindServicesHistoriesFilter : BaseFindRequest
   {
-        [FromQuery(Name = "serviceid")]
-        public Guid? ServiceId { get; set; }
+    [FromQuery(Name = "serviceid")]
+    public Guid? ServiceId { get; set; }
 
-        [FromQuery(Name = "version")]
-        public string Verison { get; set; }
+    [FromQuery(Name = "version")]
+    public string Verison { get; set; }
   }
 }

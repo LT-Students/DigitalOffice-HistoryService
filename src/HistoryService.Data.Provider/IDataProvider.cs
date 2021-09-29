@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LT.DigitalOffice.HistoryService.Data.Provider
 {
-    [AutoInject(InjectType.Scoped)]
-    public interface IDataProvider : IBaseDataProvider
-    {
-        DbSet<DbService> Services { get; set; }
-        DbSet<DbServiceHistory> ServicesHistories { get; set; }
-    }
+  [AutoInject(InjectType.Scoped)]
+  public interface IDataProvider : IBaseDataProvider
+  {
+    DbSet<DbService> Services { get; set; }
+    DbSet<DbServiceHistory> ServicesHistories { get; set; }
+  }
 }
