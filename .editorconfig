@@ -111,6 +111,9 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 #prefer properties not to be prefaced with this. or Me. in Visual Basic
 dotnet_style_qualification_for_property = false:suggestion
+csharp_space_around_binary_operators=ignore
 
 [*.{cs,vb}]
-tab_width=4
+tab_width=2
+indent_size=2
+indent_style=space
