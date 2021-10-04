@@ -5,9 +5,9 @@ using System;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces
 {
-    [AutoInject]
-    public interface ICreateServiceHistoryCommand
-    {
-        OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request);
-    }
+  [AutoInject]
+  public interface ICreateServiceHistoryCommand
+  {
+    OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request);
+  }
 }
