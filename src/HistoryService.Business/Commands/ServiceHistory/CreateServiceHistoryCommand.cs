@@ -44,8 +44,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
           return new OperationResultResponse<Guid?>
           {
-              Status = OperationResultStatusType.Failed,
-              Errors = new() { "Not enough rights." }
+            Status = OperationResultStatusType.Failed,
+            Errors = new() { "Not enough rights." }
           };
       }
 
@@ -57,8 +57,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
         return new OperationResultResponse<Guid?>
         {
-            Status = OperationResultStatusType.Failed,
-            Errors = errors
+          Status = OperationResultStatusType.Failed,
+          Errors = errors
         };
       }
 

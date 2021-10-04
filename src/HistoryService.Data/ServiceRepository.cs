@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.HistoryService.Data
     private readonly IDataProvider _provider;
 
     public ServiceRepository(
-        IDataProvider provider)
+      IDataProvider provider)
     {
       _provider = provider;
     }
@@ -26,7 +26,7 @@ namespace LT.DigitalOffice.HistoryService.Data
     {
       if (dbService == null)
       {
-          return null;
+        return null;
       }
 
       _provider.Services.Add(dbService);

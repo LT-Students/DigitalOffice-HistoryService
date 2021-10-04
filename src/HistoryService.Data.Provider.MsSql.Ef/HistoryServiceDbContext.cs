@@ -12,7 +12,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       modelBuilder.ApplyConfigurationsFromAssembly(
-          Assembly.Load("LT.DigitalOffice.HistoryService.Models.Db"));
+        Assembly.Load("LT.DigitalOffice.HistoryService.Models.Db"));
     }
 
     public HistoryServiceDbContext(DbContextOptions<HistoryServiceDbContext> options)

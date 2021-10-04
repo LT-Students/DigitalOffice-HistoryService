@@ -38,8 +38,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
         return new FindResultResponse<ServiceInfo>
         {
-            Status = OperationResultStatusType.Failed,
-            Errors = new() { "Not enough rights." }
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { "Not enough rights." }
         };
       }
 
@@ -48,13 +48,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       response.Body = _repository.Find().Select(_mapper.Map).ToList();
 
       response.Status = OperationResultStatusType.FullSuccess;
-
-      if (response.Body == null)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
-
-        response.Status = OperationResultStatusType.Failed;
-      }
 
       return response;
     }

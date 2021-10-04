@@ -36,7 +36,7 @@ namespace LT.DigitalOffice.HistoryService.Data
       return dbServiceHistory.Id;
     }
 
-    public IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
+    public List<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
     {
       IQueryable<DbServiceHistory> dbServicesHistories = _provider.ServicesHistories.AsQueryable();
 
@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
       totalCount = dbServicesHistories.Count();
 
-      return dbServicesHistories.Skip(filter.skipCount).Take(filter.takeCount).ToList();
+      return dbServicesHistories.Skip(filter.skipCount).Take(filter.takeCount).OrderByDescending(v => v.Version).ToList();
     }
   }
 }

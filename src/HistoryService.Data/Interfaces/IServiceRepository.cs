@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 {
-    [AutoInject]
-    public interface IServiceRepository
-    {
-        Guid? Create(DbService dbService);
+  [AutoInject]
+  public interface IServiceRepository
+  {
+    Guid? Create(DbService dbService);
 
-        bool DoesNameExist(string name);
+    bool DoesNameExist(string name);
 
-        List<DbService> Find();
-    }
+    List<DbService> Find();
+  }
 }
