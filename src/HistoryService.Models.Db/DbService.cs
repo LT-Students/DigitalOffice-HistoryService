@@ -30,18 +30,18 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
     public void Configure(EntityTypeBuilder<DbService> builder)
     {
       builder.
-          ToTable(DbService.TableName);
+        ToTable(DbService.TableName);
 
       builder.
-          HasKey(p => p.Id);
+        HasKey(p => p.Id);
 
       builder
-          .Property(p => p.Name)
-          .IsRequired();
+        .Property(p => p.Name)
+        .IsRequired();
 
       builder
-          .HasMany(s => s.ServicesHistories)
-          .WithOne(sh => sh.Service);
+        .HasMany(s => s.ServicesHistories)
+        .WithOne(sh => sh.Service);
     }
   }
 }

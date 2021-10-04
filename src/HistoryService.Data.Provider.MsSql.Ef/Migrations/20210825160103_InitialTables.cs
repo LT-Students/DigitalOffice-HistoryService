@@ -12,39 +12,39 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef.Migrations
     protected override void Up(MigrationBuilder builder)
     {
       builder.CreateTable(
-          name: DbService.TableName,
-      columns: table => new
-      {
-        Id = table.Column<Guid>(nullable: false),
-        Name = table.Column<string>(nullable: false, maxLength: 30),
-        CreatedBy = table.Column<Guid>(nullable: false),
-        CreatedAtUtc = table.Column<DateTime>(nullable: false),
-        ModifiedBy = table.Column<Guid>(nullable: true),
-        ModifiedAtUtc = table.Column<DateTime>(nullable: true)
-      },
-      constraints: table =>
-      {
-        table.PrimaryKey("PK_Services", x => x.Id);
-        table.UniqueConstraint("UX_History_Name_Unique", x => x.Name);
-      });
+        name: DbService.TableName,
+        columns: table => new
+        {
+          Id = table.Column<Guid>(nullable: false),
+          Name = table.Column<string>(nullable: false, maxLength: 30),
+          CreatedBy = table.Column<Guid>(nullable: false),
+          CreatedAtUtc = table.Column<DateTime>(nullable: false),
+          ModifiedBy = table.Column<Guid>(nullable: true),
+          ModifiedAtUtc = table.Column<DateTime>(nullable: true)
+        },
+        constraints: table =>
+        {
+          table.PrimaryKey("PK_Services", x => x.Id);
+          table.UniqueConstraint("UX_History_Name_Unique", x => x.Name);
+        });
 
       builder.CreateTable(
-          name: DbServiceHistory.TableName,
-      columns: table => new
-      {
-        Id = table.Column<Guid>(nullable: false),
-        ServiceId = table.Column<Guid>(nullable: false),
-        Version = table.Column<string>(nullable: false, maxLength: 15),
-        Content = table.Column<string>(nullable: false),
-        CreatedBy = table.Column<Guid>(nullable: false),
-        CreatedAtUtc = table.Column<DateTime>(nullable: false),
-        ModifiedBy = table.Column<Guid>(nullable: true),
-        ModifiedAtUtc = table.Column<DateTime>(nullable: true)
-      },
-      constraints: table =>
-      {
-        table.PrimaryKey("PK_ServicesHistories", x => x.Id);
-      });
+        name: DbServiceHistory.TableName,
+        columns: table => new
+        {
+          Id = table.Column<Guid>(nullable: false),
+          ServiceId = table.Column<Guid>(nullable: false),
+          Version = table.Column<string>(nullable: false, maxLength: 15),
+          Content = table.Column<string>(nullable: false),
+          CreatedBy = table.Column<Guid>(nullable: false),
+          CreatedAtUtc = table.Column<DateTime>(nullable: false),
+          ModifiedBy = table.Column<Guid>(nullable: true),
+          ModifiedAtUtc = table.Column<DateTime>(nullable: true)
+        },
+        constraints: table =>
+        {
+          table.PrimaryKey("PK_ServicesHistories", x => x.Id);
+        });
     }
   }
 }

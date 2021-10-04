@@ -32,7 +32,7 @@ namespace LT.DigitalOffice.HistoryService.Data
     {
       if (dbService == null)
       {
-          return null;
+        return null;
       }
 
       _provider.Services.Add(dbService);

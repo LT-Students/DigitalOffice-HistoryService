@@ -24,22 +24,22 @@ namespace LT.DigitalOffice.HistoryService.Models.Db
     public void Configure(EntityTypeBuilder<DbServiceHistory> builder)
     {
       builder.
-          ToTable(DbServiceHistory.TableName);
+        ToTable(DbServiceHistory.TableName);
 
       builder.
-          HasKey(p => p.Id);
+        HasKey(p => p.Id);
 
       builder
-          .Property(p => p.Version)
-          .IsRequired();
+        .Property(p => p.Version)
+        .IsRequired();
 
       builder
-          .Property(p => p.Content)
-          .IsRequired();
+        .Property(p => p.Content)
+        .IsRequired();
 
       builder
-          .HasOne(sh => sh.Service)
-          .WithMany(s => s.ServicesHistories);
+        .HasOne(sh => sh.Service)
+        .WithMany(s => s.ServicesHistories);
     }
   }
 }
