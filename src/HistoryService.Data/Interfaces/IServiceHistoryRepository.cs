@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 {
   [AutoInject]
-    public interface IServiceHistoryRepository
-    {
-        Guid Create(DbServiceHistory dbServiceHistory);
+  public interface IServiceHistoryRepository
+  {
+    Guid Create(DbServiceHistory dbServiceHistory);
 
-        bool DoesVersionExist(string version, Guid id);
+    bool DoesVersionExist(string version, Guid id);
 
-        IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount);
-    }
+    IEnumerable<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount);
+  }
 }
