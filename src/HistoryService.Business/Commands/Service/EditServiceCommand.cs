@@ -1,9 +1,12 @@
-﻿using LT.DigitalOffice.HistoryService.Data.Interfaces;
+﻿using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
+using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
+using LT.DigitalOffice.HistoryService.Validation.Service.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -12,29 +15,32 @@ using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
-  public class EditServiceCommand
+  public class EditServiceCommand : IEditServiceCommand
   {
     private readonly IServiceRepository _serviceRepository;
     private readonly IAccessValidator _accessValidator;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPatchDbServiceMapper _mapper;
+    private readonly IEditServiceValidator _validator;
 
     public EditServiceCommand(
       IServiceRepository serviceRepository,
       IAccessValidator accessValidator,
       IHttpContextAccessor httpContextAccessor,
-      IPatchDbServiceMapper mapper)
+      IPatchDbServiceMapper mapper,
+      IEditServiceValidator validator)
 
     {
       _serviceRepository = serviceRepository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _mapper = mapper;
+      _validator = validator;
 
     }
     public OperationResultResponse<bool> Execute(
       Guid serviceId,
-            JsonPatchDocument<EditServiceRequest> request)
+      JsonPatchDocument<EditServiceRequest> request)
     {
       if (!_accessValidator.IsAdmin())
       {
@@ -56,7 +62,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
           Errors = new() { $"Service with this Id: '{serviceId}' doesn't exist" }
         };
       }
-      //add validator
+
+      _validator.ValidateAndThrowCustom(request);
 
       bool result = _serviceRepository.Edit(service, _mapper.Map(request));
 
@@ -66,7 +73,5 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         Body = result
       };
     }
-
   }
-
 }

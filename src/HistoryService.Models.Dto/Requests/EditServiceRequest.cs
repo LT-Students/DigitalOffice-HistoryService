@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace LT.DigitalOffice.HistoryService.Models.Dto.Requests
+﻿namespace LT.DigitalOffice.HistoryService.Models.Dto.Requests
 {
   public class EditServiceRequest
   {

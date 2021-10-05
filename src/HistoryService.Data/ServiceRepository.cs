@@ -49,7 +49,6 @@ namespace LT.DigitalOffice.HistoryService.Data
     public DbService Get(Guid serviceId)
     {
       DbService service = _provider.Services.FirstOrDefault(e => e.Id == serviceId);
-
       if (service == null)
       {
         return null;
