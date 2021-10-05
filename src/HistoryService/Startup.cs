@@ -88,9 +88,9 @@ namespace LT.DigitalOffice.HistoryService
           builder =>
           {
             builder
-              .AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
           });
       });
 

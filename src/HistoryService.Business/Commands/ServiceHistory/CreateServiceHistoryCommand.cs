@@ -40,13 +40,13 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
     {
       if (!_accessValidator.IsAdmin())
       {
-          _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-          return new OperationResultResponse<Guid?>
-          {
-            Status = OperationResultStatusType.Failed,
-            Errors = new() { "Not enough rights." }
-          };
+        return new OperationResultResponse<Guid?>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { "Not enough rights." }
+        };
       }
 
       OperationResultResponse<Guid?> response = new();
