@@ -4,6 +4,7 @@ using LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
@@ -39,7 +40,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
     public FindResultResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter)
     {
-      if (!_accessValidator.IsAdmin())
+      if (!_accessValidator.IsAdmin()||
+        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
