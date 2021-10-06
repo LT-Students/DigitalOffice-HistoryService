@@ -21,13 +21,13 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
     private readonly IFindServiceHistoryResponseMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAccessValidator _accessValidator;
-    private readonly IBaseFindRequestValidator _validator;
+    private readonly IBaseFindFilterValidator _validator;
 
     public FindServiceHistoryCommand(
       IServiceHistoryRepository repository,
       IFindServiceHistoryResponseMapper mapper,
       IAccessValidator accessValidator,
-      IBaseFindRequestValidator validator,
+      IBaseFindFilterValidator validator,
       IHttpContextAccessor httpContextAccessor)
     {
       _accessValidator = accessValidator;

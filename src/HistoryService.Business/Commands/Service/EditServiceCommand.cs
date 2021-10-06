@@ -11,6 +11,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
@@ -63,9 +64,19 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      _validator.ValidateAndThrowCustom(request);
 
-      bool result = _serviceRepository.Edit(service, _mapper.Map(request));
+      if (!_validator.ValidateCustom(request, out List<string> errors))
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+        return new OperationResultResponse<bool>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = errors
+        };
+      }
+
+        bool result = _serviceRepository.Edit(service, _mapper.Map(request));
 
       return new OperationResultResponse<bool>
       {

@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
       totalCount = dbServicesHistories.Count();
 
-      return dbServicesHistories.Skip(filter.skipCount).Take(filter.takeCount).OrderByDescending(v => v.Version).ToList();
+      return dbServicesHistories.Skip(filter.SkipCount).Take(filter.TakeCount).OrderByDescending(v => v.Version).ToList();
     }
   }
 }
