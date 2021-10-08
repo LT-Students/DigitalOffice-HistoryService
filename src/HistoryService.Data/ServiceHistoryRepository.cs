@@ -2,6 +2,9 @@
 using LT.DigitalOffice.HistoryService.Data.Provider;
 using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
+using LT.DigitalOffice.Kernel.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +14,15 @@ namespace LT.DigitalOffice.HistoryService.Data
   public class ServiceHistoryRepository : IServiceHistoryRepository
   {
     private readonly IDataProvider _provider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
 
     public ServiceHistoryRepository(
-      IDataProvider provider)
+      IDataProvider provider,
+      IHttpContextAccessor httpContextAccessor)
     {
       _provider = provider;
+      _httpContextAccessor = httpContextAccessor;
     }
 
     public bool DoesVersionExist(string version, Guid id)
@@ -52,6 +59,42 @@ namespace LT.DigitalOffice.HistoryService.Data
       totalCount = dbServicesHistories.Count();
 
       return dbServicesHistories.Skip(filter.SkipCount).Take(filter.TakeCount).OrderByDescending(v => v.Version).ToList();
+    }
+
+    public DbServiceHistory Get(Guid serviceHistoryId)
+    {
+      DbServiceHistory serviceHistory = _provider.ServicesHistories.FirstOrDefault(e => e.Id == serviceHistoryId);
+      if (serviceHistory == null)
+      {
+        return null;
+      }
+
+      return serviceHistory;
+    }
+
+    public bool Edit(DbServiceHistory serviceHistory, JsonPatchDocument<DbServiceHistory> request)
+    {
+      if (serviceHistory == null)
+      {
+        return false;
+      }
+
+      if (request == null)
+      {
+        return false;
+      }
+
+      request.ApplyTo(serviceHistory);
+      serviceHistory.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      serviceHistory.ModifiedAtUtc = DateTime.UtcNow;
+      _provider.Save();
+
+      return true;
+    }
+
+    public bool DoesServiceExist(Guid id)
+    {
+      return _provider.ServicesHistories.Any(sh => id == sh.ServiceId);
     }
   }
 }
