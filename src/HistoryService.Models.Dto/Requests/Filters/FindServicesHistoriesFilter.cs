@@ -1,10 +1,10 @@
-﻿using LT.DigitalOffice.Kernel.Requests;
+﻿using LT.DigitalOffice.Kernel.Validators.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters
 {
-  public record FindServicesHistoriesFilter : BaseFindFilter
+  public record FindServicesHistoriesFilter : BaseFindRequest
   {
     [FromQuery(Name = "serviceid")]
     public Guid? ServiceId { get; set; }
