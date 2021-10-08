@@ -91,10 +91,5 @@ namespace LT.DigitalOffice.HistoryService.Data
 
       return true;
     }
-
-    public bool DoesServiceExist(Guid id)
-    {
-      return _provider.ServicesHistories.Any(sh => id == sh.ServiceId);
-    }
   }
 }
