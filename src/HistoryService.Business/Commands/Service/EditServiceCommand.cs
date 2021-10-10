@@ -65,7 +65,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-
       if (!_validator.ValidateCustom(request, out List<string> errors))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
