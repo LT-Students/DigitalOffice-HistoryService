@@ -30,14 +30,12 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       IHttpContextAccessor httpContextAccessor,
       IPatchDbServiceHistoryMapper mapper,
       IEditServiceHistoryValidator validator)
-
     {
       _repository = repository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _mapper = mapper;
       _validator = validator;
-
     }
 
     public OperationResultResponse<bool> Execute(
@@ -64,7 +62,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
           Errors = new() { $"Service with this Id: '{serviceHistoryId}' doesn't exist" }
         };
       }
-
 
       if (!_validator.ValidateCustom(request, out List<string> errors))
       {

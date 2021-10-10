@@ -16,7 +16,6 @@ namespace LT.DigitalOffice.HistoryService.Data
     private readonly IDataProvider _provider;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-
     public ServiceHistoryRepository(
       IDataProvider provider,
       IHttpContextAccessor httpContextAccessor)

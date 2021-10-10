@@ -30,15 +30,14 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       IHttpContextAccessor httpContextAccessor,
       IPatchDbServiceMapper mapper,
       IEditServiceValidator validator)
-
     {
       _serviceRepository = serviceRepository;
       _accessValidator = accessValidator;
       _httpContextAccessor = httpContextAccessor;
       _mapper = mapper;
       _validator = validator;
-
     }
+
     public OperationResultResponse<bool> Execute(
       Guid serviceId,
       JsonPatchDocument<EditServiceRequest> request)
@@ -57,6 +56,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       DbService service = _serviceRepository.Get(serviceId);
       if (service == null)
       {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
         return new OperationResultResponse<bool>
         {
           Status = OperationResultStatusType.Failed,
@@ -76,7 +77,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-        bool result = _serviceRepository.Edit(service, _mapper.Map(request));
+      bool result = _serviceRepository.Edit(service, _mapper.Map(request));
 
       return new OperationResultResponse<bool>
       {
