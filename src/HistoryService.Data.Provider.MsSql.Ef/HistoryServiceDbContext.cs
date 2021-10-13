@@ -1,6 +1,8 @@
 ﻿using LT.DigitalOffice.HistoryService.Models.Db;
+using LT.DigitalOffice.Kernel.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef
 {
@@ -20,16 +22,20 @@ namespace LT.DigitalOffice.HistoryService.Data.Provider.MsSql.Ef
     {
     }
 
-    public void Save()
+    public object MakeEntityDetached(object obj)
+    {
+      Entry(obj).State = EntityState.Detached;
+      return Entry(obj).State;
+    }
+
+    void IBaseDataProvider.Save()
     {
       SaveChanges();
     }
 
-    public object MakeEntityDetached(object obj)
+    async Task IBaseDataProvider.SaveAsync()
     {
-      Entry(obj).State = EntityState.Detached;
-
-      return Entry(obj).State;
+      await SaveChangesAsync();
     }
 
     public void EnsureDeleted()

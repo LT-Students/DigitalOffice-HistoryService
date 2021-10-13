@@ -14,7 +14,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
         .WithMessage("Name cannot be empty.")
         .MaximumLength(30)
         .WithMessage("Name is too long.")
-        .Must(name => !repository.DoesNameExist(name))
+        .MustAsync(async (name, cancellation) => !await repository.DoesNameExistAsync(name))
         .WithMessage("Service with name already exist");
     }
   }

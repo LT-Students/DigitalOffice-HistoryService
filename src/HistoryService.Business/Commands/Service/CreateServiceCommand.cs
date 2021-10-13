@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
@@ -37,10 +38,10 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid?> Execute(CreateServiceRequest request)
+    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateServiceRequest request)
     {
-      if (!_accessValidator.IsAdmin()||
-        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.IsAdminAsync()||
+        !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -64,7 +65,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
       OperationResultResponse<Guid?> response = new();
 
-      response.Body = _repository.Create(_mapperService.Map(request));
+      response.Body = await _repository.CreateAsync(_mapperService.Map(request));
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 

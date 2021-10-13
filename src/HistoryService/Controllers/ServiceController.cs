@@ -6,6 +6,7 @@ using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Controllers
 {
@@ -14,27 +15,27 @@ namespace LT.DigitalOffice.HistoryService.Controllers
   public class ServiceController : ControllerBase
   {
     [HttpPost("create")]
-    public OperationResultResponse<Guid?> Create(
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateServiceCommand command,
       [FromBody] CreateServiceRequest request)
     {
-      return command.Execute(request);
+      return await command.ExecuteAsync(request);
     }
 
     [HttpGet("find")]
-    public FindResultResponse<ServiceInfo> Find(
+    public async Task<FindResultResponse<ServiceInfo>> FindAsync(
       [FromServices] IFindServiceCommand command)
     {
-      return command.Execute();
+      return await command.ExecuteAsync();
     }
 
     [HttpPatch("edit")]
-    public OperationResultResponse<bool> Edit(
+    public async Task<OperationResultResponse<bool>> EditAsync(
       [FromServices] IEditServiceCommand command,
       [FromQuery] Guid serviceId,
       [FromBody] JsonPatchDocument<EditServiceRequest> request)
     {
-      return command.Execute(serviceId, request);
+      return await command.ExecuteAsync(serviceId, request);
     }
   }
 }

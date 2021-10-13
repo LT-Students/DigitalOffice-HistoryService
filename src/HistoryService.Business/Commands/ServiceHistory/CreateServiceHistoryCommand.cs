@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -37,10 +38,10 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request)
+    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateServiceHistoryRequest request)
     {
-      if (!_accessValidator.IsAdmin()||
-        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.IsAdminAsync()||
+          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -68,7 +69,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
       response.Status = OperationResultStatusType.FullSuccess;
 
-      response.Body = _repository.Create(_mapperServiceHistory.Map(request));
+      response.Body = await _repository.CreateAsync(_mapperServiceHistory.Map(request));
 
       if (response.Body == null)
       {

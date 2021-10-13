@@ -3,20 +3,21 @@ using LT.DigitalOffice.Kernel.Attributes;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 {
   [AutoInject]
   public interface IServiceRepository
   {
-    Guid? Create(DbService dbService);
+    Task<Guid?> CreateAsync(DbService dbService);
 
-    bool DoesNameExist(string name);
+    Task<bool> DoesNameExistAsync(string name);
 
-    List<DbService> Find();
+    Task<List<DbService>> FindAsync();
 
-    DbService Get(Guid serviceId);
+    Task<DbService> GetAsync(Guid serviceId);
 
-    bool Edit(DbService service, JsonPatchDocument<DbService> request);
+    Task<bool> EditAsync(DbService service, JsonPatchDocument<DbService> request);
   }
 }

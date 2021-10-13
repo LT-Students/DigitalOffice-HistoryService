@@ -4,9 +4,10 @@ using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.Kernel.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Data
 {
@@ -23,12 +24,12 @@ namespace LT.DigitalOffice.HistoryService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool DoesNameExist(string name)
+    public async Task<bool> DoesNameExistAsync(string name)
     {
-      return _provider.Services.Any(s => s.Name.Contains(name));
+      return await _provider.Services.AnyAsync(s => s.Name.Contains(name));
     }
 
-    public Guid? Create(DbService dbService)
+    public async Task<Guid?> CreateAsync(DbService dbService)
     {
       if (dbService == null)
       {
@@ -36,19 +37,19 @@ namespace LT.DigitalOffice.HistoryService.Data
       }
 
       _provider.Services.Add(dbService);
-      _provider.Save();
+      await _provider.SaveAsync();
 
       return dbService.Id;
     }
 
-    public List<DbService> Find()
+    public async Task<List<DbService>> FindAsync()
     {
-      return _provider.Services.ToList();
+      return await _provider.Services.ToListAsync();
     }
 
-    public DbService Get(Guid serviceId)
+    public async Task<DbService> GetAsync(Guid serviceId)
     {
-      DbService service = _provider.Services.FirstOrDefault(e => e.Id == serviceId);
+      DbService service = await _provider.Services.FirstOrDefaultAsync(e => e.Id == serviceId);
       if (service == null)
       {
         return null;
@@ -57,7 +58,7 @@ namespace LT.DigitalOffice.HistoryService.Data
       return service;
     }
 
-    public bool Edit(DbService service, JsonPatchDocument<DbService> request)
+    public async Task<bool> EditAsync(DbService service, JsonPatchDocument<DbService> request)
     {
       if (service == null)
       {
@@ -72,7 +73,7 @@ namespace LT.DigitalOffice.HistoryService.Data
       request.ApplyTo(service);
       service.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
       service.ModifiedAtUtc = DateTime.UtcNow;
-      _provider.Save();
+      await _provider.SaveAsync();
 
       return true;
     }

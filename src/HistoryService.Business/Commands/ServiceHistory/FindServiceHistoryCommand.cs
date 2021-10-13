@@ -1,6 +1,7 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces;
+using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -38,10 +40,10 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       _validator = validator;
     }
 
-    public FindResultResponse<ServiceHistoryInfo> Execute(FindServicesHistoriesFilter filter)
+    public async Task<FindResultResponse<ServiceHistoryInfo>> ExecuteAsync(FindServicesHistoriesFilter filter)
     {
-      if (!_accessValidator.IsAdmin()||
-        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.IsAdminAsync()||
+          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -74,9 +76,11 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      FindResultResponse <ServiceHistoryInfo> response = new();
+      FindResultResponse<ServiceHistoryInfo> response = new();
 
-      response.Body = _repository.Find(filter, out int totalCount).Select(_mapper.Map).ToList();
+      (List<DbServiceHistory> dbServiceHistory, int totalCount) = await _repository.FindAsync(filter);
+
+      response.Body = dbServiceHistory.Select(dbNews => _mapper.Map(dbNews)).ToList();
 
       response.TotalCount = totalCount;
 

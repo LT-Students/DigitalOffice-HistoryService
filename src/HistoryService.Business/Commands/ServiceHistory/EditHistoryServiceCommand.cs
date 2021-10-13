@@ -5,6 +5,7 @@ using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -38,11 +40,12 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       _validator = validator;
     }
 
-    public OperationResultResponse<bool> Execute(
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(
       Guid serviceHistoryId,
       JsonPatchDocument<EditServiceHistoryRequest> request)
     {
-      if (!_accessValidator.IsAdmin())
+      if (!await _accessValidator.IsAdminAsync()||
+          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -53,7 +56,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      DbServiceHistory service = _repository.Get(serviceHistoryId);
+      DbServiceHistory service = await _repository.GetAsync(serviceHistoryId);
       if (service == null)
       {
         return new OperationResultResponse<bool>
@@ -74,7 +77,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      bool result = _repository.Edit(service, _mapper.Map(request));
+      bool result = await _repository.EditAsync(service, _mapper.Map(request));
 
       return new OperationResultResponse<bool>
       {

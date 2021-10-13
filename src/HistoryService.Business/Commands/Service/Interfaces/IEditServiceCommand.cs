@@ -3,12 +3,13 @@ using LT.DigitalOffice.Kernel.Attributes;
 using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces
 {
   [AutoInject]
   public interface IEditServiceCommand
   {
-    OperationResultResponse<bool> Execute(Guid serviceId, JsonPatchDocument<EditServiceRequest> request);
+    Task<OperationResultResponse<bool>> ExecuteAsync(Guid serviceId, JsonPatchDocument<EditServiceRequest> request);
   }
 }
