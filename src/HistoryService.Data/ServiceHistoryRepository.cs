@@ -74,12 +74,7 @@ namespace LT.DigitalOffice.HistoryService.Data
 
     public async Task<bool> EditAsync(DbServiceHistory serviceHistory, JsonPatchDocument<DbServiceHistory> request)
     {
-      if (serviceHistory == null)
-      {
-        return false;
-      }
-
-      if (request == null)
+      if (serviceHistory == null || request == null)
       {
         return false;
       }
