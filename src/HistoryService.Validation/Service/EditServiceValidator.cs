@@ -31,8 +31,8 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceRequest>, bool>, string>
         {
-          { x => !string.IsNullOrEmpty(x.value?.ToString()), "Name can't be empty"},
-          { x => x.value.ToString().Length < 30, "Name is too long."}
+          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Name can't be empty"},
+          { x => x.value.ToString().Trim().Length < 30, "Name is too long."}
         }, CascadeMode.Stop);
 
       #endregion

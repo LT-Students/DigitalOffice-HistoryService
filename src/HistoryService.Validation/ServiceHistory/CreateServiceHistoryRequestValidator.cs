@@ -9,8 +9,8 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
   {
     public CreateServiceHistoryRequestValidator(IServiceHistoryRepository repository)
     {
-      RuleFor(sh => sh.Version.Trim())
-        .NotEmpty()
+      RuleFor(sh => sh.Version)
+        .Cascade(CascadeMode.Stop).NotNull().NotEmpty()
         .WithMessage("Version cannot be empty.")
         .MaximumLength(15)
         .WithMessage("Version is too long.");

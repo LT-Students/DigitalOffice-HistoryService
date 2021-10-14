@@ -35,7 +35,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
-          { x => !string.IsNullOrEmpty(x.value?.ToString()), "Content can't be empty"}
+          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Content can't be empty"}
         });
 
       AddFailureForPropertyIf(
@@ -51,7 +51,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
-          { x => !string.IsNullOrEmpty(x.value?.ToString()), "Version can't be empty"}
+          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty"}
         });
 
       #endregion
