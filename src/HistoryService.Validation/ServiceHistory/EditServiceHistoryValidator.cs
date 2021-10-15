@@ -62,7 +62,9 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new()
         {
-          { async x => Guid.TryParse(x.value.ToString(), out var result) && !await _repository.DoesVersionExistAsync(x.value.ToString(), result), "The name already exist." }
+          { async x => Guid.TryParse(x.value.ToString(), out var result) &&
+            !await _repository.DoesVersionExistAsync(x.value.ToString(), result),
+            "The name already exist." }
         });
 
       #endregion
