@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
+using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.Validators;
@@ -11,6 +12,8 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
 {
   public class EditServiceHistoryValidator : BaseEditRequestValidator<EditServiceHistoryRequest>, IEditServiceHistoryValidator
   {
+    private readonly IServiceHistoryRepository _repository;
+
     private void HandleInternalPropertyValidation(Operation<EditServiceHistoryRequest> requestedOperation, CustomContext context)
     {
       Context = context;
@@ -40,7 +43,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
 
       AddFailureForPropertyIf(
         nameof(EditServiceHistoryRequest.ServiceId),
-        x => x == OperationType.Replace,
+        o => o == OperationType.Replace,
         new()
         {
           { x => Guid.TryParse(x.value?.ToString(), out Guid result), "Service id has incorrect format." },
@@ -51,7 +54,15 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
-          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty"}
+          { x  => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty"}
+        });
+
+      AddFailureForPropertyIfAsync(
+        nameof(EditServiceHistoryRequest.Version),
+        o => o == OperationType.Replace,
+        new()
+        {
+          { async x => Guid.TryParse(x.value.ToString(), out var result) && !await _repository.DoesVersionExistAsync(x.value.ToString(), result), "The name already exist." }
         });
 
       #endregion

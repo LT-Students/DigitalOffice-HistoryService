@@ -44,8 +44,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       Guid serviceHistoryId,
       JsonPatchDocument<EditServiceHistoryRequest> request)
     {
-      if (!await _accessValidator.IsAdminAsync()||
-          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -59,6 +58,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       DbServiceHistory service = await _repository.GetAsync(serviceHistoryId);
       if (service == null)
       {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
         return new OperationResultResponse<bool>
         {
           Status = OperationResultStatusType.Failed,

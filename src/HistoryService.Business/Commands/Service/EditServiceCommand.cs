@@ -44,15 +44,13 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       Guid serviceId,
       JsonPatchDocument<EditServiceRequest> request)
     {
-      if (!await _accessValidator.IsAdminAsync()||
-          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
         return new OperationResultResponse<bool>
         {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { "Not enough rights." }
+          Status = OperationResultStatusType.Failed
         };
       }
 

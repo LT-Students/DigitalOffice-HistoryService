@@ -37,8 +37,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 
     public async Task<FindResultResponse<ServiceInfo>> ExecuteAsync()
     {
-      if (!await _accessValidator.IsAdminAsync()||
-          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -49,15 +48,24 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      FindResultResponse<ServiceInfo> response = new();
-
       List<DbService> dbServiceList = await _repository.FindAsync();
+      if (dbServiceList == null)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-      response.Body = dbServiceList.Select(dbService => _mapper.Map(dbService)).ToList();
+        return new FindResultResponse<ServiceInfo>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { $"Services don't exist" }
+        };
+      }
+        FindResultResponse<ServiceInfo> response = new();
 
-      response.Status = OperationResultStatusType.FullSuccess;
+        response.Body = dbServiceList.Select(dbService => _mapper.Map(dbService)).ToList();
 
-      return response;
+        response.Status = OperationResultStatusType.FullSuccess;
+
+        return response;
     }
   }
 }

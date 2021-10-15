@@ -1,16 +1,20 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
+using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.Service.Interfaces;
 using LT.DigitalOffice.Kernel.Validators;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Validation.Service
 {
   public class EditServiceValidator : BaseEditRequestValidator<EditServiceRequest>, IEditServiceValidator
   {
+    private readonly IServiceRepository _repository;
+
     private void HandleInternalPropertyValidation(Operation<EditServiceRequest> requestedOperation, CustomContext context)
     {
       Context = context;
@@ -35,6 +39,13 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
           { x => x.value.ToString().Trim().Length < 30, "Name is too long."}
         }, CascadeMode.Stop);
 
+      AddFailureForPropertyIfAsync(
+        nameof(EditServiceRequest.Name),
+        x => x == OperationType.Replace,
+        new()
+        {
+          { async x => !await _repository.DoesNameExistAsync(x.value.ToString()), "The name already exist." }
+        });
       #endregion
     }
 

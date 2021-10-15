@@ -42,8 +42,7 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 
     public async Task<FindResultResponse<ServiceHistoryInfo>> ExecuteAsync(FindServicesHistoriesFilter filter)
     {
-      if (!await _accessValidator.IsAdminAsync()||
-          !await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 

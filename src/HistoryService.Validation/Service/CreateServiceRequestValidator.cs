@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
   {
     public CreateServiceRequestValidator(IServiceRepository repository)
     {
-      RuleFor(service => service.Name.Trim())
+      RuleFor(service => service.Name)
         .Cascade(CascadeMode.Stop).NotNull().NotEmpty()
         .WithMessage("Name cannot be empty.")
         .MaximumLength(30)
