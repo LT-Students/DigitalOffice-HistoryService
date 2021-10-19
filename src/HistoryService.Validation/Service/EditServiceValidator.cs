@@ -7,7 +7,6 @@ using LT.DigitalOffice.Kernel.Validators;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Validation.Service
 {

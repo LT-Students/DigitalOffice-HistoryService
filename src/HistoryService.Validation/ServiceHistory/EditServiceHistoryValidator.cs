@@ -12,12 +12,10 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
 {
   public class EditServiceHistoryValidator : BaseEditRequestValidator<EditServiceHistoryRequest>, IEditServiceHistoryValidator
   {
-    private readonly IServiceHistoryRepository _repository;
-
-    private void HandleInternalPropertyValidation(Operation<EditServiceHistoryRequest> requestedOperation, CustomContext context)
+    private void HandleInternalPropertyValidation(Operation<EditServiceHistoryRequest> reqrequestedOperationuest, CustomContext context)
     {
       Context = context;
-      RequestedOperation = requestedOperation;
+      RequestedOperation = reqrequestedOperationuest;
 
       #region local functions
 
@@ -55,16 +53,6 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
           { x  => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty"}
-        });
-
-      AddFailureForPropertyIfAsync(
-        nameof(EditServiceHistoryRequest.Version),
-        o => o == OperationType.Replace,
-        new()
-        {
-          { async x => Guid.TryParse(x.value.ToString(), out var result) &&
-            !await _repository.DoesVersionExistAsync(x.value.ToString(), result),
-            "The name already exist." }
         });
 
       #endregion

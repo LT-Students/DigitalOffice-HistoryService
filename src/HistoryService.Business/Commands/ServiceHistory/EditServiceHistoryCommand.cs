@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
+﻿using FluentValidation.Results;
+using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Db;
@@ -7,12 +8,12 @@ using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -55,8 +56,8 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      DbServiceHistory service = await _repository.GetAsync(serviceHistoryId);
-      if (service == null)
+      DbServiceHistory serviceHistory = await _repository.GetAsync(serviceHistoryId);
+      if (serviceHistory == null)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
@@ -67,18 +68,35 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      if (!_validator.ValidateCustom(request, out List<string> errors))
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
+      if (!validationResult.IsValid)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         return new OperationResultResponse<bool>
         {
           Status = OperationResultStatusType.Failed,
-          Errors = errors
+          Errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList()
+
         };
       }
 
-      bool result = await _repository.EditAsync(service, _mapper.Map(request));
+      Operation<EditServiceHistoryRequest> versionOperation = request.Operations.FirstOrDefault(
+        o => o.path.EndsWith(nameof(EditServiceHistoryRequest.Version), StringComparison.OrdinalIgnoreCase));
+
+      if (await _repository.DoesEditVersionExistAsync(versionOperation.value.ToString(), serviceHistoryId))
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Conflict;
+
+        return new OperationResultResponse<bool>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { $"This History version already exist" }
+
+        };
+      }
+
+      bool result = await _repository.EditAsync(serviceHistory, _mapper.Map(request));
 
       return new OperationResultResponse<bool>
       {

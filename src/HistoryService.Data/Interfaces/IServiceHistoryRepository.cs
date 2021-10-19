@@ -15,6 +15,8 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 
     Task<bool> DoesVersionExistAsync(string version, Guid id);
 
+    Task<bool> DoesEditVersionExistAsync(string version, Guid serviceHistoryId);
+
     Task<(List<DbServiceHistory> dbServicesHistories, int totalCount)> FindAsync(FindServicesHistoriesFilter filter);
 
     Task<DbServiceHistory> GetAsync(Guid serviceHistoryId);
