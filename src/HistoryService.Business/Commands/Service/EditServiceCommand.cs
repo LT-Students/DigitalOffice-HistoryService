@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
+﻿using FluentValidation.Results;
+using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Db;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -66,14 +68,15 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      if (!_validator.ValidateCustom(request, out List<string> errors))
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
+      if (!validationResult.IsValid)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
         return new OperationResultResponse<bool>
         {
           Status = OperationResultStatusType.Failed,
-          Errors = errors
+          Errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList()
         };
       }
 

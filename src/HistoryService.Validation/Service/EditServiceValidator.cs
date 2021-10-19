@@ -40,7 +40,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
 
       AddFailureForPropertyIfAsync(
         nameof(EditServiceRequest.Name),
-        x => x == OperationType.Replace,
+        o => o == OperationType.Replace,
         new()
         {
           { async x => !await _repository.DoesNameExistAsync(x.value.ToString()), "The name already exist." }

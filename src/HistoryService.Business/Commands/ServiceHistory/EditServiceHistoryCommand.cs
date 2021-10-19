@@ -77,7 +77,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         {
           Status = OperationResultStatusType.Failed,
           Errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList()
-
         };
       }
 
@@ -92,7 +91,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         {
           Status = OperationResultStatusType.Failed,
           Errors = new() { $"This History version already exist" }
-
         };
       }
 
