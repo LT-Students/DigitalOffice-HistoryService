@@ -18,6 +18,6 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 
     Task<DbService> GetAsync(Guid serviceId);
 
-    Task<bool> EditAsync(DbService service, JsonPatchDocument<DbService> request);
+    Task<bool> EditAsync(Guid serviceId, JsonPatchDocument<DbService> request);
   }
 }

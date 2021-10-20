@@ -56,18 +56,6 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      DbService service = await _serviceRepository.GetAsync(serviceId);
-      if (service == null)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
-
-        return new OperationResultResponse<bool>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Service with this Id: '{serviceId}' doesn't exist" }
-        };
-      }
-
       ValidationResult validationResult = await _validator.ValidateAsync(request);
       if (!validationResult.IsValid)
       {
@@ -80,8 +68,17 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      bool result = await _serviceRepository.EditAsync(service, _mapper.Map(request));
+      bool result = await _serviceRepository.EditAsync(serviceId, _mapper.Map(request));
+      if (result == false)
+      {
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
+        return new OperationResultResponse<bool>
+        {
+          Status = OperationResultStatusType.Failed,
+          Errors = new() { $"Service with this Id: '{serviceId}' doesn't exist" }
+        };
+      }
       return new OperationResultResponse<bool>
       {
         Status = OperationResultStatusType.FullSuccess,

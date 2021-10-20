@@ -52,8 +52,9 @@ namespace LT.DigitalOffice.HistoryService.Data
       return await _provider.Services.FirstOrDefaultAsync(e => e.Id == serviceId);
     }
 
-    public async Task<bool> EditAsync(DbService service, JsonPatchDocument<DbService> request)
+    public async Task<bool> EditAsync(Guid serviceId, JsonPatchDocument<DbService> request)
     {
+      DbService service = await _provider.Services.FirstOrDefaultAsync(e => e.Id == serviceId);
       if (service == null || request == null)
       {
         return false;
