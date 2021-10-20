@@ -48,15 +48,11 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      List<DbService> dbServiceList = await _repository.FindAsync();
-
-      FindResultResponse<ServiceInfo> response = new();
-
-      response.Body = dbServiceList.Select(dbService => _mapper.Map(dbService)).ToList();
-
-      response.Status = OperationResultStatusType.FullSuccess;
-
-      return response;
+      return new()
+      {
+        Body = (await _repository.FindAsync()).Select(_mapper.Map).ToList(),
+        Status = OperationResultStatusType.FullSuccess
+      };
     }
   }
 }
