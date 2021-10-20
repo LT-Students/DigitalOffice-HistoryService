@@ -68,22 +68,19 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      bool result = await _serviceRepository.EditAsync(serviceId, _mapper.Map(request));
-      if (result == false)
+      OperationResultResponse<bool> response = new();
+
+      response.Body = await _serviceRepository.EditAsync(serviceId, _mapper.Map(request));
+      response.Status = OperationResultStatusType.FullSuccess;
+
+      if (!response.Body)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-        return new OperationResultResponse<bool>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Service with this Id: '{serviceId}' doesn't exist" }
-        };
+        response.Status = OperationResultStatusType.Failed;
       }
-      return new OperationResultResponse<bool>
-      {
-        Status = OperationResultStatusType.FullSuccess,
-        Body = result
-      };
+
+      return response;
     }
   }
 }
