@@ -49,23 +49,14 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       }
 
       List<DbService> dbServiceList = await _repository.FindAsync();
-      if (dbServiceList == null)
-      {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
-        return new FindResultResponse<ServiceInfo>
-        {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { $"Services don't exist" }
-        };
-      }
-        FindResultResponse<ServiceInfo> response = new();
+      FindResultResponse<ServiceInfo> response = new();
 
-        response.Body = dbServiceList.Select(dbService => _mapper.Map(dbService)).ToList();
+      response.Body = dbServiceList.Select(dbService => _mapper.Map(dbService)).ToList();
 
-        response.Status = OperationResultStatusType.FullSuccess;
+      response.Status = OperationResultStatusType.FullSuccess;
 
-        return response;
+      return response;
     }
   }
 }
