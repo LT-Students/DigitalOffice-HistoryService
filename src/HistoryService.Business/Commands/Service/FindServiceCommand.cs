@@ -1,14 +1,18 @@
 ﻿using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Responses.Interfaces;
+using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
+using MassTransit.Initializers;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
@@ -31,10 +35,9 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
       _accessValidator = accessValidator;
     }
 
-    public FindResultResponse<ServiceInfo> Execute()
+    public async Task<FindResultResponse<ServiceInfo>> ExecuteAsync()
     {
-      if (!_accessValidator.IsAdmin()||
-        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -45,13 +48,11 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
         };
       }
 
-      FindResultResponse<ServiceInfo> response = new();
-
-      response.Body = _repository.Find().Select(_mapper.Map).ToList();
-
-      response.Status = OperationResultStatusType.FullSuccess;
-
-      return response;
+      return new()
+      {
+        Body = (await _repository.FindAsync()).Select(_mapper.Map).ToList(),
+        Status = OperationResultStatusType.FullSuccess
+      };
     }
   }
 }

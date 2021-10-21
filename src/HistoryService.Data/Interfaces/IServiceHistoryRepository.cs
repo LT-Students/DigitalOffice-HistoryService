@@ -1,18 +1,27 @@
 ﻿using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.Kernel.Attributes;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Data.Interfaces
 {
   [AutoInject]
   public interface IServiceHistoryRepository
   {
-    Guid Create(DbServiceHistory dbServiceHistory);
+    Task<Guid> CreateAsync(DbServiceHistory dbServiceHistory);
 
-    bool DoesVersionExist(string version, Guid id);
+    Task<bool> DoesVersionExistAsync(string version, Guid serviceId);
 
-    List<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount);
+    Task<bool> DoesEditVersionExistAsync(string version, Guid serviceHistoryId);
+
+    Task<(List<DbServiceHistory> dbServicesHistories, int totalCount)> FindAsync(FindServicesHistoriesFilter filter);
+
+    Task<DbServiceHistory> GetAsync(Guid serviceHistoryId);
+
+    Task<bool> EditAsync(DbServiceHistory service, JsonPatchDocument<DbServiceHistory> request);
+
   }
 }

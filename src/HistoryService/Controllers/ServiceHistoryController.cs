@@ -2,12 +2,11 @@
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
 using LT.DigitalOffice.HistoryService.Models.Dto.Responses;
-using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Controllers
 {
@@ -16,19 +15,28 @@ namespace LT.DigitalOffice.HistoryService.Controllers
   public class ServiceHistoryController : ControllerBase
   {
     [HttpPost("create")]
-    public OperationResultResponse<Guid?> Create(
+    public async Task<OperationResultResponse<Guid?>> CreateAsync(
       [FromServices] ICreateServiceHistoryCommand command,
       [FromBody] CreateServiceHistoryRequest request)
     {
-      return command.Execute(request);
+      return await command.ExecuteAsync(request);
     }
 
     [HttpGet("find")]
-    public FindResultResponse<ServiceHistoryInfo> Find(
+    public async Task<FindResultResponse<ServiceHistoryInfo>> FindAsync(
       [FromServices] IFindServiceHistoryCommand command,
       [FromQuery] FindServicesHistoriesFilter filter)
     {
-      return command.Execute(filter);
+      return await command.ExecuteAsync(filter);
+    }
+
+    [HttpPatch("edit")]
+    public async Task<OperationResultResponse<bool>> EditAsync(
+      [FromServices] IEditServiceHistoryCommand command,
+      [FromQuery] Guid serviceHistoryId,
+      [FromBody] JsonPatchDocument<EditServiceHistoryRequest> request)
+    {
+      return await command.ExecuteAsync(serviceHistoryId, request);
     }
   }
 }

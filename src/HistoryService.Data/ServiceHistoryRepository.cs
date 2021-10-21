@@ -2,28 +2,45 @@
 using LT.DigitalOffice.HistoryService.Data.Provider;
 using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests.Filters;
+using LT.DigitalOffice.Kernel.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Data
 {
   public class ServiceHistoryRepository : IServiceHistoryRepository
   {
     private readonly IDataProvider _provider;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public ServiceHistoryRepository(
-      IDataProvider provider)
+      IDataProvider provider,
+      IHttpContextAccessor httpContextAccessor)
     {
       _provider = provider;
+      _httpContextAccessor = httpContextAccessor;
     }
 
-    public bool DoesVersionExist(string version, Guid id)
+    public async Task<bool> DoesVersionExistAsync(string version, Guid serviceId)
     {
-      return _provider.ServicesHistories.Any(sh => id == sh.ServiceId && sh.Version.Contains(version));
+      return await _provider.ServicesHistories.AnyAsync(sh => serviceId == sh.ServiceId
+             && sh.Version.Contains(version));
     }
 
-    public Guid Create(DbServiceHistory dbServiceHistory)
+    public async Task<bool> DoesEditVersionExistAsync(string version, Guid serviceHistoryId)
+    {
+      var serviceId = _provider.ServicesHistories.FirstOrDefault(sh => sh.Id == serviceHistoryId).ServiceId;
+
+      return await _provider.ServicesHistories.AnyAsync(sh => sh.ServiceId == serviceId
+             && sh.Version.Contains(version));
+    }
+
+    public async Task<Guid> CreateAsync(DbServiceHistory dbServiceHistory)
     {
       if (dbServiceHistory == null)
       {
@@ -31,12 +48,12 @@ namespace LT.DigitalOffice.HistoryService.Data
       }
 
       _provider.ServicesHistories.Add(dbServiceHistory);
-      _provider.Save();
+      await _provider.SaveAsync();
 
       return dbServiceHistory.Id;
     }
 
-    public List<DbServiceHistory> Find(FindServicesHistoriesFilter filter, out int totalCount)
+    public async Task<(List<DbServiceHistory> dbServicesHistories, int totalCount)> FindAsync(FindServicesHistoriesFilter filter)
     {
       IQueryable<DbServiceHistory> dbServicesHistories = _provider.ServicesHistories.AsQueryable();
 
@@ -44,14 +61,33 @@ namespace LT.DigitalOffice.HistoryService.Data
       {
         dbServicesHistories = dbServicesHistories.Where(sh => sh.ServiceId == filter.ServiceId.Value);
       }
+
       if (!string.IsNullOrEmpty(filter.Verison))
       {
         dbServicesHistories = dbServicesHistories.Where(sh => sh.Version == filter.Verison);
       }
 
-      totalCount = dbServicesHistories.Count();
+      return (await dbServicesHistories.Skip(filter.SkipCount).Take(filter.TakeCount).OrderByDescending(v => v.Version).ToListAsync(), await dbServicesHistories.CountAsync());
+    }
 
-      return dbServicesHistories.Skip(filter.skipCount).Take(filter.takeCount).OrderByDescending(v => v.Version).ToList();
+    public async Task<DbServiceHistory> GetAsync(Guid serviceHistoryId)
+    {
+      return await _provider.ServicesHistories.FirstOrDefaultAsync(e => e.Id == serviceHistoryId);
+    }
+
+    public async Task<bool> EditAsync(DbServiceHistory serviceHistory, JsonPatchDocument<DbServiceHistory> request)
+    {
+      if (serviceHistory == null || request == null)
+      {
+        return false;
+      }
+
+      request.ApplyTo(serviceHistory);
+      serviceHistory.ModifiedBy = _httpContextAccessor.HttpContext.GetUserId();
+      serviceHistory.ModifiedAtUtc = DateTime.UtcNow;
+      await _provider.SaveAsync();
+
+      return true;
     }
   }
 }

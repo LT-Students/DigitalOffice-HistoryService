@@ -9,7 +9,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
   {
     public CreateServiceHistoryRequestValidator(IServiceHistoryRepository repository)
     {
-      RuleFor(sh => sh.Version.Trim())
+      RuleFor(sh => sh.Version)
         .Cascade(CascadeMode.Stop).NotNull().NotEmpty()
         .WithMessage("Version cannot be empty.")
         .MaximumLength(15)
@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         .WithMessage("Content cannot be empty.");
 
       RuleFor(sh => sh)
-        .Must(sh => !repository.DoesVersionExist(sh.Version, sh.ServiceId))
+        .MustAsync(async (sh, _) => !await repository.DoesVersionExistAsync(sh.Version, sh.ServiceId))
         .WithMessage("History version for this service already exist");
     }
   }

@@ -1,80 +1,81 @@
 ﻿using FluentValidation.Results;
 using LT.DigitalOffice.HistoryService.Business.Commands.Service.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
-using LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces;
-using LT.DigitalOffice.HistoryService.Models.Dto;
+using LT.DigitalOffice.HistoryService.Mappers.Models.Interfaces;
+using LT.DigitalOffice.HistoryService.Models.Db;
+using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.Service.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
+using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.Service
 {
-  public class CreateServiceCommand : ICreateServiceCommand
+  public class EditServiceCommand : IEditServiceCommand
   {
-    private readonly IServiceRepository _repository;
-    private readonly IDbServiceMapper _mapperService;
+    private readonly IServiceRepository _serviceRepository;
     private readonly IAccessValidator _accessValidator;
-    private readonly ICreateServiceRequestValidator _validator;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IPatchDbServiceMapper _mapper;
+    private readonly IEditServiceValidator _validator;
 
-    public CreateServiceCommand(
-      IDbServiceMapper mapperService,
-      IServiceRepository repository,
+    public EditServiceCommand(
+      IServiceRepository serviceRepository,
       IAccessValidator accessValidator,
-      ICreateServiceRequestValidator validator,
-      IHttpContextAccessor httpContextAccessor)
+      IHttpContextAccessor httpContextAccessor,
+      IPatchDbServiceMapper mapper,
+      IEditServiceValidator validator)
     {
-      _repository = repository;
-      _mapperService = mapperService;
+      _serviceRepository = serviceRepository;
       _accessValidator = accessValidator;
-      _validator = validator;
       _httpContextAccessor = httpContextAccessor;
+      _mapper = mapper;
+      _validator = validator;
     }
 
-    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateServiceRequest request)
+    public async Task<OperationResultResponse<bool>> ExecuteAsync(
+      Guid serviceId,
+      JsonPatchDocument<EditServiceRequest> request)
     {
       if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-        return new OperationResultResponse<Guid?>
+        return new OperationResultResponse<bool>
         {
-          Status = OperationResultStatusType.Failed,
-          Errors = new() { "Not enough rights." }
+          Status = OperationResultStatusType.Failed
         };
       }
 
       ValidationResult validationResult = await _validator.ValidateAsync(request);
-
       if (!validationResult.IsValid)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        return new()
+        return new OperationResultResponse<bool>
         {
           Status = OperationResultStatusType.Failed,
           Errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList()
         };
       }
 
-      OperationResultResponse<Guid?> response = new();
+      OperationResultResponse<bool> response = new();
 
-      response.Body = await _repository.CreateAsync(_mapperService.Map(request));
-
-      _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
+      response.Body = await _serviceRepository.EditAsync(serviceId, _mapper.Map(request));
       response.Status = OperationResultStatusType.FullSuccess;
 
-      if (response.Body == null)
+      if (!response.Body)
       {
-        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
 
         response.Status = OperationResultStatusType.Failed;
       }

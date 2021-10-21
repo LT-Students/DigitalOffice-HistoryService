@@ -1,4 +1,5 @@
-﻿using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
+﻿using FluentValidation.Results;
+using LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory.Interfaces;
 using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Mappers.Db.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
@@ -6,12 +7,12 @@ using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
-using LT.DigitalOffice.Kernel.FluentValidationExtensions;
 using LT.DigitalOffice.Kernel.Responses;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
 {
@@ -37,10 +38,9 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public OperationResultResponse<Guid?> Execute(CreateServiceHistoryRequest request)
+    public async Task<OperationResultResponse<Guid?>> ExecuteAsync(CreateServiceHistoryRequest request)
     {
-      if (!_accessValidator.IsAdmin()||
-        _accessValidator.HasRights(Rights.AddEditRemoveHistories))
+      if (!await _accessValidator.HasRightsAsync(Rights.AddEditRemoveHistories))
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
@@ -51,24 +51,26 @@ namespace LT.DigitalOffice.HistoryService.Business.Commands.ServiceHistory
         };
       }
 
-      OperationResultResponse<Guid?> response = new();
+      ValidationResult validationResult = await _validator.ValidateAsync(request);
 
-      if (!_validator.ValidateCustom(request, out List<string> errors))
+      if (!validationResult.IsValid)
       {
         _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        return new OperationResultResponse<Guid?>
+        return new()
         {
           Status = OperationResultStatusType.Failed,
-          Errors = errors
+          Errors = validationResult.Errors.Select(vf => vf.ErrorMessage).ToList()
         };
       }
+
+      OperationResultResponse<Guid?> response = new();
 
       _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
 
       response.Status = OperationResultStatusType.FullSuccess;
 
-      response.Body = _repository.Create(_mapperServiceHistory.Map(request));
+      response.Body = await _repository.CreateAsync(_mapperServiceHistory.Map(request));
 
       if (response.Body == null)
       {
