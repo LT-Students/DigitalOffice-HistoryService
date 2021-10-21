@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
-using LT.DigitalOffice.HistoryService.Data.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
 using LT.DigitalOffice.Kernel.Validators;
@@ -36,7 +35,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
-          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Content can't be empty"}
+          { x => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Content can't be empty."}
         });
 
       AddFailureForPropertyIf(
@@ -52,7 +51,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         o => o == OperationType.Replace,
         new Dictionary<Func<Operation<EditServiceHistoryRequest>, bool>, string>
         {
-          { x  => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty"}
+          { x  => !string.IsNullOrEmpty(x.value?.ToString().Trim()), "Version can't be empty."}
         });
 
       #endregion

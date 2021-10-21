@@ -26,19 +26,20 @@ namespace LT.DigitalOffice.HistoryService.Data
       _httpContextAccessor = httpContextAccessor;
     }
 
-    public async Task<bool> DoesVersionExistAsync(string version, Guid id)
+    public async Task<bool> DoesVersionExistAsync(string version, Guid serviceId)
     {
-      return await _provider.ServicesHistories.AnyAsync(sh => id == sh.ServiceId
+      return await _provider.ServicesHistories.AnyAsync(sh => serviceId == sh.ServiceId
              && sh.Version.Contains(version));
     }
 
-    public async Task<bool> DoesEditVersionExistAsync(string version, Guid id)
+    public async Task<bool> DoesEditVersionExistAsync(string version, Guid serviceHistoryId)
     {
-      var serviceId = _provider.ServicesHistories.FirstOrDefault(sh => sh.Id == id).ServiceId;
+      var serviceId = _provider.ServicesHistories.FirstOrDefault(sh => sh.Id == serviceHistoryId).ServiceId;
 
       return await _provider.ServicesHistories.AnyAsync(sh => sh.ServiceId == serviceId
              && sh.Version.Contains(version));
     }
+
     public async Task<Guid> CreateAsync(DbServiceHistory dbServiceHistory)
     {
       if (dbServiceHistory == null)

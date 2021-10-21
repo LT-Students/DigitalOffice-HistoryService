@@ -20,7 +20,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.ServiceHistory
         .WithMessage("Content cannot be empty.");
 
       RuleFor(sh => sh)
-        .MustAsync(async (sh, cancellation) => !await repository.DoesVersionExistAsync(sh.Version, sh.ServiceId))
+        .MustAsync(async (sh, _) => !await repository.DoesVersionExistAsync(sh.Version, sh.ServiceId))
         .WithMessage("History version for this service already exist");
     }
   }

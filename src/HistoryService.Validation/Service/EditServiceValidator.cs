@@ -7,6 +7,7 @@ using LT.DigitalOffice.Kernel.Validators;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LT.DigitalOffice.HistoryService.Validation.Service
 {
@@ -14,7 +15,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
   {
     private readonly IServiceRepository _repository;
 
-    private void HandleInternalPropertyValidation(Operation<EditServiceRequest> requestedOperation, CustomContext context)
+    private async Task HandleInternalPropertyValidation(Operation<EditServiceRequest> requestedOperation, CustomContext context)
     {
       Context = context;
       RequestedOperation = requestedOperation;
@@ -38,7 +39,7 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
           { x => x.value.ToString().Trim().Length < 30, "Name is too long."}
         }, CascadeMode.Stop);
 
-      AddFailureForPropertyIfAsync(
+      await AddFailureForPropertyIfAsync(
         nameof(EditServiceRequest.Name),
         o => o == OperationType.Replace,
         new()
@@ -48,10 +49,13 @@ namespace LT.DigitalOffice.HistoryService.Validation.Service
       #endregion
     }
 
-    public EditServiceValidator()
+    public EditServiceValidator(
+      IServiceRepository repository)
     {
+      _repository = repository;
+
       RuleForEach(x => x.Operations)
-        .Custom(HandleInternalPropertyValidation);
+        .CustomAsync(async (x, context, _) => await HandleInternalPropertyValidation(x, context));
     }
   }
 }

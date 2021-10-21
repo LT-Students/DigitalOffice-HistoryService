@@ -13,7 +13,7 @@ namespace LT.DigitalOffice.HistoryService.Data.Interfaces
   {
     Task<Guid> CreateAsync(DbServiceHistory dbServiceHistory);
 
-    Task<bool> DoesVersionExistAsync(string version, Guid id);
+    Task<bool> DoesVersionExistAsync(string version, Guid serviceId);
 
     Task<bool> DoesEditVersionExistAsync(string version, Guid serviceHistoryId);
 
