@@ -1,5 +1,4 @@
-﻿using LT.DigitalOffice.Kernel.Attributes.ParseEntity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;

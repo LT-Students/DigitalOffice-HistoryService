@@ -5,7 +5,7 @@ using LT.DigitalOffice.HistoryService.Mappers.Models.Interfaces;
 using LT.DigitalOffice.HistoryService.Models.Db;
 using LT.DigitalOffice.HistoryService.Models.Dto.Requests;
 using LT.DigitalOffice.HistoryService.Validation.ServiceHistory.Interfaces;
-using LT.DigitalOffice.Kernel.AccessValidatorEngine.Interfaces;
+using LT.DigitalOffice.Kernel.BrokerSupport.AccessValidatorEngine.Interfaces;
 using LT.DigitalOffice.Kernel.Constants;
 using LT.DigitalOffice.Kernel.Enums;
 using LT.DigitalOffice.Kernel.Responses;
